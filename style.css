@@ -1,0 +1,115 @@
+/* Håndskriften fra Hold av dato-kortet: legg filen i /fonts med dette navnet. */
+@font-face{font-family:"HAD Script";src:url("fonts/HAD-Script.woff2") format("woff2"),url("fonts/HAD-Script.otf") format("opentype");font-display:swap}
+
+:root{
+  --bg:#E4E2DB;      /* varm grå sand */
+  --ink:#6E5C5E;     /* tekst og streker */
+  --blue:#DAE8F0;    /* påmelding, overnatting */
+  --yellow:#E6E1BF;  /* bilderamme, reise */
+  --script:#F1E8B0;  /* håndskrift i toppbanneret */
+  --muted:#8E7E80;
+  --danger:#9C3D2E;
+  --f-mono:"Roboto Mono",ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+  --f-script:"HAD Script","Caveat","Bradley Hand",cursive;
+  color-scheme:light;
+}
+*,*::before,*::after{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 .9375rem/1.6 var(--f-mono);letter-spacing:.01em;-webkit-text-size-adjust:100%}
+[hidden]{display:none !important}
+img,video{display:block;max-width:100%}
+a{color:var(--ink);text-underline-offset:3px}
+:focus-visible{outline:2px solid var(--ink);outline-offset:3px}
+p{margin:0}
+h2,h3{font-weight:400;margin:0}
+h2{font-size:1.35rem;letter-spacing:.02em;text-transform:uppercase}
+h3{font-size:1.25rem;letter-spacing:.02em;text-transform:uppercase}
+
+/* Innholdskolonne: venstrejustert, god luft */
+.col{width:100%;max-width:44rem;margin:0 auto;padding:0 2.75rem}
+.gap{margin-top:6rem}
+@media (max-width:40rem){.col{padding:0 1.75rem}.gap{margin-top:4.5rem}}
+
+/* ---------- Toppbanner ---------- */
+.hero{position:relative;height:66vh;height:66svh;min-height:24rem;overflow:hidden;background:#3c4b56}
+.hero video,.hero img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.hero-text{position:absolute;left:2.75rem;top:2.25rem;color:var(--script);font:400 clamp(2.4rem,5vw,3.6rem)/1.15 var(--f-script);text-shadow:0 1px 14px rgba(20,30,40,.35)}
+.hero-text p+p{margin-top:.15em}
+@media (max-width:40rem){.hero-text{left:auto;top:auto;right:1.75rem;bottom:2rem;font-size:2.4rem}}
+
+/* ---------- Intro ---------- */
+.intro p+p{margin-top:1.6em}
+.intro p{opacity:0;transform:translateY(10px);transition:opacity .9s ease,transform .9s ease}
+.intro p.vis{opacity:1;transform:none}
+@media (prefers-reduced-motion:reduce){.intro p{opacity:1;transform:none;transition:none}}
+
+/* ---------- Bilder ---------- */
+.photo-wide{max-width:44rem;margin-left:auto;margin-right:auto;padding:0 2.75rem}
+.photo-wide img{width:100%;aspect-ratio:3/2;object-fit:cover}
+@media (max-width:40rem){.photo-wide{padding:0}}
+.framed{background:var(--yellow);padding:.9rem}
+.framed img{width:100%;aspect-ratio:3/2;object-fit:cover}
+
+/* ---------- Fakta + Krogerup ---------- */
+.facts-wrap{display:grid;gap:2.5rem;align-items:start}
+@media (min-width:48rem){.facts-wrap{grid-template-columns:1fr 1fr;align-items:center}}
+.facts{display:grid;grid-template-columns:max-content 1fr;column-gap:2.5rem;row-gap:.1rem;margin:0}
+.facts dt,.facts dd{margin:0}
+.btn{display:inline-block;margin-top:2.5rem;background:var(--blue);color:var(--ink);border:1px solid var(--ink);border-radius:0;font:400 1rem/1 var(--f-mono);letter-spacing:.02em;padding:.95rem 1.1rem;cursor:pointer;text-decoration:none}
+.btn:hover{background:#cddfe9}
+.btn:disabled{opacity:.6;cursor:wait}
+
+/* ---------- Bryllupshelgen ---------- */
+.days{margin-top:2.25rem;display:grid;gap:2.75rem}
+.day{display:grid;grid-template-columns:7.5rem 1fr;gap:1rem}
+.day dt{text-transform:uppercase;letter-spacing:.02em}
+.day dd{margin:0;max-width:26rem}
+@media (max-width:40rem){.day{grid-template-columns:6.5rem 1fr}}
+
+/* ---------- Infobokser ---------- */
+.boxes{display:grid;gap:3rem}
+@media (min-width:48rem){.boxes{grid-template-columns:1fr 1fr;gap:2rem}}
+.box{border:1px solid var(--ink);padding:1.25rem 1rem 2.25rem}
+.box h3{margin-bottom:3rem}
+.box.blue{background:var(--blue)}
+.box.yellow{background:var(--yellow)}
+
+/* ---------- Kart ---------- */
+.map-frame{background:var(--yellow);padding:.9rem;margin-top:2.25rem}
+#kart{height:24rem;background:#efece4;z-index:0}
+#kart .leaflet-tile-pane{filter:sepia(.35) saturate(.55) brightness(1.03)}
+.leaflet-container{font-family:var(--f-mono)}
+.pin-icon{width:16px;height:16px;border-radius:50%;border:2px solid var(--ink)}
+.pins{list-style:none;margin:1.75rem 0 0;padding:0;display:grid;gap:1rem}
+.pins li{display:grid;grid-template-columns:1rem 1fr;gap:.75rem}
+.dot{width:12px;height:12px;border-radius:50%;border:1.5px solid var(--ink);margin-top:.4rem}
+
+footer.col{padding-top:7rem;padding-bottom:4rem}
+footer p{font:400 2rem/1 var(--f-script)}
+
+/* ---------- Skjema ---------- */
+dialog{border:1px solid var(--ink);padding:0;width:100%;max-width:34rem;max-height:100%;background:var(--bg);color:var(--ink);border-radius:0}
+dialog::backdrop{background:rgba(60,50,52,.45)}
+@media (max-width:40rem){dialog{max-width:none;height:100%;margin:0;border:0}}
+.dlg{padding:1.75rem 1.75rem 2.5rem}
+.dlg-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:2rem}
+.close{border:0;background:none;font:400 1.75rem/1 var(--f-mono);color:var(--ink);cursor:pointer;padding:.25rem .5rem}
+form{display:grid;gap:2rem}
+fieldset{border:0;padding:0;margin:0;display:grid;gap:1rem}
+legend{text-transform:uppercase;letter-spacing:.02em;margin-bottom:1rem;padding:0}
+.field{display:grid;gap:.35rem}
+input:not([type=radio]):not([type=checkbox]),select{width:100%;font:400 1rem/1.4 var(--f-mono);color:var(--ink);background:#F4F2EC;border:1px solid var(--ink);border-radius:0;padding:.75rem .8rem}
+input:focus,select:focus{outline:2px solid var(--ink);outline-offset:0}
+.radios{display:flex;gap:.6rem;flex-wrap:wrap}
+.radios label,.check{display:flex;align-items:center;gap:.6rem;cursor:pointer}
+.radios label{padding:.65rem .9rem;border:1px solid var(--ink)}
+.radios label:has(input:checked){background:var(--blue)}
+input[type=radio],input[type=checkbox]{accent-color:var(--ink);width:1.05rem;height:1.05rem;margin:0}
+.info{background:var(--yellow);border:1px solid var(--ink);padding:.85rem 1rem}
+.person{border:1px solid var(--ink);background:#F4F2EC;padding:1rem;display:grid;gap:.85rem}
+.muted{opacity:.75}
+.hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+.status{min-height:1.2em}
+.status.feil{color:var(--danger)}
+.takk{padding:3rem 0}
+.takk .script{font:400 2.6rem/1 var(--f-script);margin-bottom:1.25rem}
+.takk .btn{margin-top:2rem}

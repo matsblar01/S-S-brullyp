@@ -1,0 +1,272 @@
+<!doctype html>
+<html lang="no">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Vi gifter oss! Sofie & Sigve, 17.07.2027</title>
+<meta name="description" content="Sofie og Sigve gifter seg 17. juli 2027 i Humlebæk, Danmark.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;500&family=Caveat&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+<link rel="stylesheet" href="style.css">
+<script src="config.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script>
+/* ============================================================
+   INNHOLD – alt som står på siden ligger her.
+   ============================================================ */
+const C = {
+  intro: [
+    "På en surfetur til Hoddevik for 8 år siden traff vi hverandre, to ferske studenter på et nytt eventyr sammen – det skulle ikke bli det siste.",
+    "Tilbake i Trondheim ble vennskap til kjærlighet. Vi flyttet sammen og ble hverandres nærmeste venner og tryggeste partnere.",
+    "Etter 6 år, i en bortgjemt lagune i Portugal, spurte Sigve. Sofie svarte «JA!», og kjærester var blitt til forlovede.",
+    "Sommeren 2027 skal vi gifte oss, og alle dere som vi er så glade i, er invitert."
+  ],
+
+  fakta: [
+    ["Sted",   "Humlebæk, Danmark"],
+    ["Vielse", "TBA"],
+    ["Fest",   "Krogerup Højskole"],
+    ["Dato",   "17. juli 2027"],
+    ["Svar",   "Innen 17. februar"]
+  ],
+
+  helgen: [
+    ["Torsdag", "Sammenkomst for de som allerede har ankommet Danmark. Tid og sted TBA."],
+    ["Fredag",  "Ingen offisielle planer. Nyt området og lad opp til lørdagen."],
+    ["Lørdag",  "Den store dagen! Vielse, middag og fest – alt i gangavstand til Humlebæk sentrum og Krogerup Højskole."],
+    ["Søndag",  "Brunsj på Krogerup Højskole."]
+  ],
+
+  info: [
+    { tittel: "Overnatting", farge: "blue",   tekst: "Informasjon om potensiell overnatting på Krogerup Højskole kommer senere." },
+    { tittel: "Reise",       farge: "yellow", tekst: "Mer informasjon om reise til og fra bryllupet kommer også senere." }
+  ],
+
+  skjema: {
+    krogerupPris: null,   // f.eks. "650 DKK per person"
+    brunsjTekst: "Brunsj på Krogerup Højskole søndag 18. juli"
+  },
+
+  // lat/lng = null skjuler punktet til stedet er klart
+  kart: {
+    steder: [
+      { navn: "Vielse", info: "Sted kommer", lat: null, lng: null, farge: "#E6E1BF" },
+      { navn: "Krogerup Højskole", info: "Fest, overnatting og brunsj. Krogerupvej 13, 3050 Humlebæk", lat: 55.97352, lng: 12.53427, farge: "#DAE8F0" },
+      { navn: "Humlebæk stasjon", info: "Tog langs kysten fra København og Helsingør", lat: 55.96374, lng: 12.53341, farge: "#E4E2DB" }
+    ],
+    rute: []   // [[lat, lng], ...] fra vielse til fest
+  }
+};
+</script>
+</head>
+<body>
+
+<header class="hero">
+  <!-- Videoen legges i media/hav.mp4. Bildet vises til den er på plass. -->
+  <video autoplay muted loop playsinline preload="auto" poster="media/hav.jpg" aria-hidden="true">
+    <source src="media/hav.mp4" type="video/mp4">
+  </video>
+  <div class="hero-text"><h1 style="font:inherit;margin:0">Vi gifter oss!</h1><p>17.07.2027.</p></div>
+</header>
+
+<main>
+  <section class="col intro gap" id="intro" aria-label="Om oss"></section>
+
+  <figure class="photo-wide gap" style="margin-bottom:0">
+    <img src="media/surf.jpg" alt="Sofie og Sigve med surfebrett i havet" loading="lazy">
+  </figure>
+
+  <section class="col gap" aria-label="Når og hvor">
+    <div class="facts-wrap">
+      <div>
+        <dl class="facts" id="fakta"></dl>
+        <button class="btn" id="aapne">Påmelding</button>
+      </div>
+      <div class="framed"><img src="media/krogerup.jpg" alt="Krogerup Højskole med blomstereng foran" loading="lazy"></div>
+    </div>
+  </section>
+
+  <section class="col gap" aria-labelledby="h-helg" style="margin-top:7rem">
+    <h2 id="h-helg">Bryllupshelgen</h2>
+    <dl class="days" id="helgen"></dl>
+  </section>
+
+  <section class="col gap" aria-label="Praktisk informasjon">
+    <div class="boxes" id="info"></div>
+  </section>
+
+  <section class="col gap" aria-labelledby="h-kart">
+    <h2 id="h-kart">Kart</h2>
+    <div class="map-frame"><div id="kart" role="region" aria-label="Kart over Humlebæk"></div></div>
+    <ul class="pins" id="pins"></ul>
+  </section>
+</main>
+
+<footer class="col"><p>Sofie &amp; Sigve</p></footer>
+
+<dialog id="dlg" aria-labelledby="h-dlg">
+  <div class="dlg">
+    <div class="dlg-top">
+      <h2 id="h-dlg">Påmelding</h2>
+      <button class="close" id="lukk" aria-label="Lukk">×</button>
+    </div>
+
+    <form id="form" novalidate>
+      <fieldset>
+        <legend>Dine opplysninger</legend>
+        <label class="field">Navn<input name="navn" autocomplete="name" required></label>
+        <label class="field">E-post<input type="email" name="epost" autocomplete="email" inputmode="email" required></label>
+        <label class="field">Telefon<input type="tel" name="telefon" autocomplete="tel" inputmode="tel"></label>
+      </fieldset>
+
+      <fieldset>
+        <legend>Melder du på andre?</legend>
+        <div class="radios">
+          <label><input type="radio" name="andre" value="nei" checked> Nei, bare meg</label>
+          <label><input type="radio" name="andre" value="ja"> Ja</label>
+        </div>
+        <label class="field" id="antallFelt" hidden>Hvor mange andre?
+          <select name="antall" id="antall"></select>
+        </label>
+      </fieldset>
+
+      <fieldset>
+        <legend>Mat, overnatting og brunsj</legend>
+        <p class="info" id="prisInfo"></p>
+        <div id="personer" style="display:grid;gap:.75rem"></div>
+      </fieldset>
+
+      <p class="muted" style="font-size:.85rem">Opplysningene brukes bare til planleggingen av bryllupet og slettes etterpå.</p>
+
+      <label class="hp" aria-hidden="true">Nettside <input name="nettside" tabindex="-1" autocomplete="off"></label>
+
+      <div><button type="submit" class="btn" id="send" style="margin-top:0">Send påmelding</button></div>
+      <p class="status" id="status" role="status" aria-live="polite"></p>
+    </form>
+
+    <div class="takk" id="takk" hidden>
+      <p class="script">Tusen takk!</p>
+      <p>Påmeldingen er registrert. Vi gleder oss til å feire med dere.</p>
+      <button class="btn" id="ferdig">Lukk</button>
+    </div>
+  </div>
+</dialog>
+
+<script>
+const $ = (s, el = document) => el.querySelector(s);
+const esc = v => String(v ?? "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const MAKS = Math.max(1, Number(window.CONFIG?.maksPersoner) || 1);
+
+/* ---------- Intro: avsnittene kommer frem ett og ett ---------- */
+$("#intro").innerHTML = C.intro.map(t => `<p>${esc(t)}</p>`).join("");
+const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add("vis"); io.unobserve(e.target); } }), { threshold: 0.6 });
+document.querySelectorAll("#intro p").forEach(p => io.observe(p));
+
+/* ---------- Fakta ---------- */
+$("#fakta").innerHTML = C.fakta.map(([k, v]) => `<dt>${esc(k)}</dt><dd>${esc(v)}</dd>`).join("");
+
+/* ---------- Bryllupshelgen ---------- */
+$("#helgen").innerHTML = C.helgen.map(([d, t]) => `<div class="day"><dt>${esc(d)}</dt><dd>${esc(t)}</dd></div>`).join("");
+
+/* ---------- Infobokser ---------- */
+$("#info").innerHTML = C.info.map(b => `<div class="box ${b.farge}"><h3>${esc(b.tittel)}</h3><p>${esc(b.tekst)}</p></div>`).join("");
+
+/* ---------- Kart ---------- */
+(function () {
+  const steder = C.kart.steder.filter(s => s.lat != null);
+  $("#pins").innerHTML = C.kart.steder.map(s => `
+    <li><span class="dot" style="background:${esc(s.farge)}"></span>
+    <div>${esc(s.navn)}<br><span class="muted">${esc(s.info)}</span>
+    ${s.lat != null ? `<br><a href="https://www.google.com/maps/search/?api=1&query=${s.lat},${s.lng}" target="_blank" rel="noopener">Åpne i Google Maps</a>` : ""}</div></li>`).join("");
+  if (!window.L || !steder.length) return;
+  const map = L.map("kart", { scrollWheelZoom: false, dragging: !L.Browser.mobile, tap: false });
+  L.tileLayer("https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png", {
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>',
+    subdomains: "abcd", maxZoom: 19
+  }).addTo(map);
+  const pkt = [];
+  steder.forEach(s => {
+    const icon = L.divIcon({ className: "", html: `<div class="pin-icon" style="background:${s.farge}"></div>`, iconSize: [16, 16], iconAnchor: [8, 8] });
+    L.marker([s.lat, s.lng], { icon }).addTo(map).bindPopup(`${esc(s.navn)}<br>${esc(s.info)}`);
+    pkt.push([s.lat, s.lng]);
+  });
+  if (C.kart.rute.length > 1) {
+    L.polyline(C.kart.rute, { color: "#6E5C5E", weight: 2.5, dashArray: "6 8" }).addTo(map);
+    pkt.push(...C.kart.rute);
+  }
+  pkt.length > 1 ? map.fitBounds(pkt, { padding: [50, 50] }) : map.setView(pkt[0], 15);
+})();
+
+/* ---------- Påmelding ---------- */
+const dlg = $("#dlg"), form = $("#form"), personerEl = $("#personer");
+$("#prisInfo").textContent = `Overnatting på Krogerup Højskole fra lørdag til søndag: ${C.skjema.krogerupPris || "pris kommer"}.`;
+
+$("#antall").innerHTML = Array.from({ length: Math.max(0, MAKS - 1) }, (_, i) => `<option value="${i + 1}">${i + 1}</option>`).join("");
+if (MAKS < 2) form.querySelector(".radios").closest("fieldset").hidden = true;
+
+function personKort(i) {
+  const d = document.createElement("div");
+  d.className = "person";
+  d.innerHTML = `
+    ${i === 0 ? `<strong>Deg</strong>` : `<label class="field">Navn på person ${i + 1}<input name="pnavn" required></label>`}
+    <label class="field">Matallergier og andre mathensyn <span class="muted">(valgfritt)</span><input name="allergier"></label>
+    <label class="check"><input type="checkbox" name="overnatting"> Overnatter på Krogerup lørdag–søndag</label>
+    <label class="check"><input type="checkbox" name="brunsj"> ${esc(C.skjema.brunsjTekst)}</label>`;
+  return d;
+}
+function tegnPersoner() {
+  const andre = form.andre.value === "ja" ? Number($("#antall").value || 0) : 0;
+  $("#antallFelt").hidden = form.andre.value !== "ja";
+  const n = 1 + andre;
+  while (personerEl.children.length < n) personerEl.appendChild(personKort(personerEl.children.length));
+  while (personerEl.children.length > n) personerEl.lastElementChild.remove();
+}
+form.addEventListener("change", e => { if (e.target.name === "andre" || e.target.id === "antall") tegnPersoner(); });
+tegnPersoner();
+
+if (window.CONFIG?.paameldingApen === false) {
+  const b = $("#aapne"); b.textContent = "Påmelding åpner snart"; b.disabled = true; b.style.cursor = "default";
+}
+$("#aapne").onclick = () => { if (window.CONFIG?.paameldingApen !== false) dlg.showModal(); };
+$("#lukk").onclick = () => dlg.close();
+$("#ferdig").onclick = () => dlg.close();
+dlg.addEventListener("close", () => {
+  if (!$("#takk").hidden) { form.reset(); tegnPersoner(); $("#takk").hidden = true; form.hidden = false; $("#status").textContent = ""; }
+});
+
+const sb = (window.supabase && window.CONFIG?.supabaseUrl && !CONFIG.supabaseUrl.includes("DITT-PROSJEKT"))
+  ? window.supabase.createClient(CONFIG.supabaseUrl, CONFIG.supabaseAnonKey) : null;
+
+form.addEventListener("submit", async e => {
+  e.preventDefault();
+  const st = $("#status"); st.className = "status"; st.textContent = "";
+  const feil = m => { st.textContent = m; st.classList.add("feil"); };
+
+  const navn = form.navn.value.trim(), epost = form.epost.value.trim();
+  if (!navn) return feil("Fyll inn navnet ditt.");
+  if (!/^\S+@\S+\.\S+$/.test(epost)) return feil("Fyll inn en gyldig e-postadresse.");
+
+  const personer = [...personerEl.children].map((d, i) => ({
+    navn: i === 0 ? navn : d.querySelector('[name="pnavn"]').value.trim(),
+    allergier: d.querySelector('[name="allergier"]').value.trim(),
+    overnatting: d.querySelector('[name="overnatting"]').checked,
+    brunsj: d.querySelector('[name="brunsj"]').checked
+  }));
+  if (personer.some(p => !p.navn)) return feil("Fyll inn navn på alle du melder på.");
+
+  const visTakk = () => { form.hidden = true; $("#takk").hidden = false; dlg.scrollTop = 0; };
+  if (form.nettside.value) return visTakk();     // robotfelle
+  if (!sb) return feil("Påmeldingen er ikke koblet til databasen ennå.");
+
+  const btn = $("#send"); btn.disabled = true; btn.textContent = "Sender …";
+  const { error } = await sb.rpc("send_svar", { p: { navn, epost, telefon: form.telefon.value.trim(), personer } });
+  btn.disabled = false; btn.textContent = "Send påmelding";
+  if (error) return feil("Påmeldingen ble ikke sendt. Sjekk nettforbindelsen og prøv igjen.");
+  visTakk();
+});
+</script>
+</body>
+</html>
