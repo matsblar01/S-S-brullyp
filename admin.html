@@ -100,7 +100,7 @@ $("#sendLenke").onclick = async () => {
     email: epost,
     options: { shouldCreateUser: false, emailRedirectTo: location.origin + location.pathname }
   });
-  if (error) { st.textContent = "Fant ingen bruker med den adressen, eller noe gikk galt. Sjekk adressen."; st.classList.add("feil"); }
+  if (error) { st.textContent = "Kunne ikke sende lenke: " + error.message; st.classList.add("feil"); console.error(error); }
   else st.textContent = "Sjekk e-posten din og trykk på lenken.";
 };
 $("#loggUt").onclick = () => sb.auth.signOut();
