@@ -1,12 +1,14 @@
-// Felles oppsett for gjestesiden og adminsiden.
-// Finnes i Supabase: Project Settings → API.
+// Oppsett for bryllupssiden.
 window.CONFIG = {
-  supabaseUrl: "https://zrmsprurpmlwdpxvcbqd.supabase.co",
-  supabaseAnonKey: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpybXNwcnVycG1sd2RweHZjYnFkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTM0NjIwNTAsImV4cCI6MjEwOTAzODA1MH0.uTH8CEcFdD73iCdmIPXLl1MRYjKd6aZER0zrCyLL-KY",
+  // Koden fra invitasjonskortet. Må være lik koden i regnearkets «Innstillinger»-fane.
+  kode: "123",
 
-  // Maks antall personer per påmelding (deg + andre). 1 = bare seg selv.
+  // Lenken til Google Apps Script-nettappen (se README, del 1).
+  scriptUrl: "https://script.google.com/macros/s/AKfycby-8b-2z_ut4cInVj1Z4Lu-QFSRLLTf3OfgvaeiC7zPYz7eBKSOvjyNwFqC_f6SJjqh-g/exec",
+
+  // Maks antall personer per påmelding (deg + andre).
   maksPersoner: 9,
 
-  // false = knappen viser «Påmelding åpner snart» (siden trenger da ingen database)
+  // false = knappen viser «Påmelding åpner snart»
   paameldingApen: true
 };
