@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="no">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>Påmeldinger – admin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<script src="config.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<style>
+.wrap{max-width:56rem}
+.top{display:flex;justify-content:space-between;align-items:center;padding:1.5rem 0 .5rem;gap:1rem}
+.top h1{font:400 2rem/1.1 var(--f-mono);margin:0}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(9rem,1fr));gap:.75rem;margin:1rem 0 1.5rem}
+.stat{background:#F4F2EC;border:1px solid var(--ink);border-radius:14px;padding:.9rem 1rem}
+.stat b{display:block;font:400 2rem/1.1 var(--f-mono)}
+.stat span{color:var(--muted);font-size:.9rem}
+.tools{display:flex;flex-wrap:wrap;gap:.5rem;align-items:center;margin-bottom:1rem}
+.tools input{flex:1 1 12rem}
+.seg{display:flex;border:1px solid var(--ink);border-radius:999px;overflow:hidden}
+.seg button{border:0;background:none;color:var(--muted);padding:.55rem .9rem;font:500 .9rem Figtree,system-ui,sans-serif;cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--blue);color:var(--ink)}
+.tools .ghost{margin:0}
+.card{background:#F4F2EC;border:1px solid var(--ink);border-radius:14px;padding:1rem 1.1rem;margin-bottom:.75rem}
+.card-top{display:flex;justify-content:space-between;align-items:baseline;gap:1rem;flex-wrap:wrap}
+.badge{font-size:.85rem;font-weight:600;padding:.2rem .6rem;border-radius:999px;background:var(--blue)}
+.badge.ja{background:var(--blue);color:var(--ink)}
+.dup{font-size:.85rem;color:var(--danger);margin-left:.5rem}
+.card ul{margin:.6rem 0 .4rem;padding-left:1.1rem}
+.card .extra{font-size:.95rem;color:var(--muted)}
+.card .slett{color:var(--danger);margin-top:.5rem}
+.allergi{margin-bottom:1.5rem}
+.allergi li{margin:.2rem 0}
+.login{max-width:24rem;margin:4rem auto;display:grid;gap:1rem}
+h2{font-size:1.5rem;margin:1.5rem 0 .75rem;text-align:left}
+.ghost{background:none;border:1px solid var(--ink);color:var(--ink);border-radius:999px;padding:.55rem 1rem;font:500 .9rem var(--f-mono);cursor:pointer}
+.link{background:none;border:0;color:var(--ink);font:inherit;cursor:pointer;padding:0;text-decoration:underline;text-underline-offset:3px}
+section{padding:0}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <section class="login" id="login" hidden>
+    <h1 style="font:400 2rem var(--f-mono);margin:0">Logg inn</h1>
+    <p class="muted">Du får en innloggingslenke på e-post.</p>
+    <label class="field">E-post<input type="email" id="epost" autocomplete="email"></label>
+    <button class="btn" id="sendLenke">Send innloggingslenke</button>
+    <p class="status" id="loginStatus" role="status"></p>
+  </section>
+
+  <div id="app" hidden>
+    <div class="top">
+      <h1>Påmeldinger</h1>
+      <button class="link" id="loggUt">Logg ut</button>
+    </div>
+    <p class="status feil" id="feil" role="status"></p>
+    <div class="stats" id="stats"></div>
+
+    <h2>Allergier og matpreferanser</h2>
+    <ul class="allergi" id="allergi"></ul>
+
+    <h2>Alle påmeldinger</h2>
+    <div class="tools">
+      <input type="search" id="sok" placeholder="Søk etter navn" aria-label="Søk etter navn">
+      <button class="ghost" id="csv">Last ned CSV</button>
+      <button class="ghost" id="oppdater">Oppdater</button>
+    </div>
+    <div id="liste"></div>
+  </div>
+</div>
+
+<script>
+const $ = s => document.querySelector(s);
+const esc = v => String(v ?? "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const sb = window.supabase.createClient(CONFIG.supabaseUrl, CONFIG.supabaseAnonKey);
+
+let data = [], lastet = false;
+
+/* ---------- Innlogging ---------- */
+sb.auth.onAuthStateChange((_event, session) => {
+  // Supabase anbefaler å ikke kalle databasen direkte inne i denne callbacken
+  setTimeout(() => session ? visApp() : visLogin(), 0);
+});
+
+function visLogin() { lastet = false; $("#app").hidden = true; $("#login").hidden = false; }
+async function visApp() {
+  $("#login").hidden = true; $("#app").hidden = false;
+  if (!lastet) { lastet = true; await last(); }
+}
+
+$("#sendLenke").onclick = async () => {
+  const epost = $("#epost").value.trim();
+  const st = $("#loginStatus"); st.className = "status";
+  if (!epost) { st.textContent = "Skriv inn e-postadressen din."; st.classList.add("feil"); return; }
+  const { error } = await sb.auth.signInWithOtp({
+    email: epost,
+    options: { shouldCreateUser: false, emailRedirectTo: location.origin + location.pathname }
+  });
+  if (error) { st.textContent = "Fant ingen bruker med den adressen, eller noe gikk galt. Sjekk adressen."; st.classList.add("feil"); }
+  else st.textContent = "Sjekk e-posten din og trykk på lenken.";
+};
+$("#loggUt").onclick = () => sb.auth.signOut();
+
+/* ---------- Data ---------- */
+async function last() {
+  $("#feil").textContent = "";
+  const { data: admin } = await sb.rpc("is_admin");
+  if (!admin) { $("#feil").textContent = "Kontoen din har ikke admintilgang. Legg e-postadressen inn i tabellen «admins»."; data = []; vis(); return; }
+  const { data: rows, error } = await sb.from("svar").select("*, personer(*)").order("opprettet", { ascending: false });
+  if (error) { $("#feil").textContent = "Kunne ikke hente svar: " + error.message; return; }
+  data = rows; vis();
+}
+$("#oppdater").onclick = last;
+
+function vis() {
+  const alle = data.flatMap(s => s.personer.map(p => ({ ...p, svar: s })));
+  const allergier = alle.filter(p => p.allergier);
+
+  $("#stats").innerHTML = [
+    [alle.length, "personer påmeldt"],
+    [alle.filter(p => p.overnatting).length, "overnatter på Krogerup"],
+    [alle.filter(p => p.brunsj).length, "på brunsj søndag"],
+    [data.length, "påmeldinger"]
+  ].map(([n, t]) => `<div class="stat"><b>${n}</b><span>${t}</span></div>`).join("");
+
+  $("#allergi").innerHTML = allergier.length
+    ? allergier.map(p => `<li><strong>${esc(p.navn)}:</strong> ${esc(p.allergier)}</li>`).join("")
+    : `<li class="muted" style="list-style:none;margin-left:-1.1rem">Ingen registrert ennå.</li>`;
+
+  const teller = {};
+  alle.forEach(p => { const k = p.navn.trim().toLowerCase(); teller[k] = (teller[k] || 0) + 1; });
+
+  const q = $("#sok").value.trim().toLowerCase();
+  const synlige = data.filter(s => !q || s.personer.some(p => p.navn.toLowerCase().includes(q)));
+  const merke = (on, t) => on ? `<span class="badge ja" style="margin-left:.4rem">${t}</span>` : "";
+
+  $("#liste").innerHTML = synlige.length ? synlige.map(s => `
+    <article class="card">
+      <div class="card-top">
+        <strong>${esc(s.navn)}</strong>
+        <span class="muted" style="font-size:.9rem">${new Date(s.opprettet).toLocaleString("no-NO", { dateStyle: "medium", timeStyle: "short" })}</span>
+      </div>
+      <div class="extra">${esc(s.epost)}${s.telefon ? `, ${esc(s.telefon)}` : ""}</div>
+      <ul>${[...s.personer].sort((a, b) => a.nr - b.nr).map(p => `<li>${esc(p.navn)}${teller[p.navn.trim().toLowerCase()] > 1 ? `<span class="dup">Mulig duplikat</span>` : ""}${merke(p.overnatting, "Overnatting")}${merke(p.brunsj, "Brunsj")}${p.allergier ? `<div class="extra">${esc(p.allergier)}</div>` : ""}</li>`).join("")}</ul>
+      <button class="link slett" data-id="${s.id}">Slett påmelding</button>
+    </article>`).join("")
+    : `<p class="muted">${data.length ? "Ingen påmeldinger matcher søket." : "Ingen påmeldinger ennå. Del lenken til siden med gjestene."}</p>`;
+}
+
+$("#sok").oninput = vis;
+$("#liste").onclick = async e => {
+  const b = e.target.closest(".slett"); if (!b) return;
+  if (!confirm("Slette denne påmeldingen? Det kan ikke angres.")) return;
+  const { error } = await sb.from("svar").delete().eq("id", b.dataset.id);
+  if (error) { $("#feil").textContent = "Kunne ikke slette: " + error.message; return; }
+  data = data.filter(s => s.id !== b.dataset.id); vis();
+};
+
+/* ---------- CSV (én rad per person, åpnes rett i Excel) ---------- */
+$("#csv").onclick = () => {
+  const ja = v => v ? "Ja" : "";
+  const rader = [["Navn", "Påmeldt av", "E-post", "Telefon", "Allergier/mathensyn", "Overnatting Krogerup", "Brunsj", "Påmeldt"]];
+  data.forEach(s => [...s.personer].sort((a, b) => a.nr - b.nr).forEach(p => rader.push([
+    p.navn, s.navn, s.epost, s.telefon, p.allergier, ja(p.overnatting), ja(p.brunsj),
+    new Date(s.opprettet).toLocaleString("no-NO")
+  ])));
+  const csv = rader.map(r => r.map(v => `"${String(v ?? "").replace(/"/g, '""')}"`).join(";")).join("\r\n");
+  const url = URL.createObjectURL(new Blob(["\ufeff" + csv], { type: "text/csv;charset=utf-8" }));
+  const a = Object.assign(document.createElement("a"), { href: url, download: "bryllup-pameldinger.csv" });
+  document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
+};
+</script>
+</body>
+</html>
