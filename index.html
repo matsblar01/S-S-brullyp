@@ -1,17 +1,25 @@
 <!doctype html>
-<html lang="no">
+<html lang="no" class="laast">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Vi gifter oss! Sofie & Sigve, 17.07.2027</title>
 <meta name="description" content="Sofie og Sigve gifter seg 17. juli 2027 i Humlebæk, Danmark.">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#E4E2DB">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Vi gifter oss! Sofie & Sigve">
+<meta property="og:description" content="17. juli 2027 i Humlebæk, Danmark. Bruk koden fra invitasjonen.">
+<meta property="og:image" content="https://matsblar01.github.io/Sigves-brullyp/media/deling.jpg">
+<meta property="og:url" content="https://matsblar01.github.io/Sigves-brullyp/">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌊</text></svg>">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;500&family=Caveat&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
 <link rel="stylesheet" href="style.css">
 <script src="config.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
 <script>
 /* ============================================================
@@ -25,132 +33,165 @@ const C = {
     "Sommeren 2027 skal vi gifte oss, og alle dere som vi er så glade i, er invitert."
   ],
 
-  fakta: [
-    ["Sted",   "Humlebæk, Danmark"],
-    ["Vielse", "TBA"],
-    ["Fest",   "Krogerup Højskole"],
-    ["Dato",   "17. juli 2027"],
-    ["Svar",   "Innen 17. februar"]
+  svarfrist: { tekst: "17. februar", dato: "20270217" },
+
+  // Programmet. torfre: true = skjules med «Vis bare lørdag».
+  dager: [
+    { id: "tor", fane: "Tor 15.", dato: "20270715", torfre: true,
+      tittel: "Sammenkomst", tekst: "Lavterskel sammenkomst for dere som allerede er i Danmark.",
+      rader: [["Tid", "TBA"], ["Sted", "TBA"], ["Overnatting", "Ordnes selv"]],
+      kalender: "Sammenkomst før bryllupet (Sofie & Sigve)" },
+    { id: "fre", fane: "Fre 16.", dato: "20270716", torfre: true,
+      tittel: "Lavterskel", tekst: "Mer informasjon kommer.",
+      rader: [["Tid", "TBA"], ["Sted", "TBA"], ["Overnatting", "Ordnes selv"]],
+      kalender: "Bryllupshelg: fredag (Sofie & Sigve)" },
+    { id: "lor", fane: "Lør 17.", dato: "20270717",
+      tittel: "Den store dagen", tekst: "Vielse, middag og fest – alt i gangavstand til Humlebæk sentrum og Krogerup Højskole.",
+      rader: [["Vielse", "TBA"], ["Fest", "Krogerup Højskole"], ["Sted", "Humlebæk, Danmark"], ["Overnatting", "Krogerup, velges i påmeldingen"]],
+      kalender: "Bryllup Sofie & Sigve" },
+    { id: "son", fane: "Søn 18.", dato: "20270718",
+      tittel: "Brunsj", tekst: "Brunsj på Krogerup Højskole.",
+      rader: [["Tid", "TBA"]],
+      kalender: "Brunsj – Krogerup Højskole (Sofie & Sigve)" }
   ],
 
-  helgen: [
-    ["Torsdag", "Sammenkomst for de som allerede har ankommet Danmark. Tid og sted TBA."],
-    ["Fredag",  "Ingen offisielle planer. Nyt området og lad opp til lørdagen."],
-    ["Lørdag",  "Den store dagen! Vielse, middag og fest – alt i gangavstand til Humlebæk sentrum og Krogerup Højskole."],
-    ["Søndag",  "Brunsj på Krogerup Højskole."]
-  ],
-
-  info: [
-    { tittel: "Overnatting", farge: "blue",   tekst: "Informasjon om potensiell overnatting på Krogerup Højskole kommer senere." },
-    { tittel: "Reise",       farge: "yellow", tekst: "Mer informasjon om reise til og fra bryllupet kommer også senere." }
-  ],
-
-  skjema: {
-    krogerupPris: null,   // f.eks. "650 DKK per person"
-    brunsjTekst: "Brunsj på Krogerup Højskole søndag 18. juli"
+  overnatting: {
+    pris: null,   // f.eks. "650 DKK per person"
+    lorSon: "Rom på Krogerup Højskole. Velges per person i påmeldingen.",
+    torFre: "Ordnes selv. Tips: hotell i Humlebæk og Helsingør, eller sommerhus i nærheten. Flere tips kommer."
   },
 
-  // lat/lng = null skjuler punktet til stedet er klart
+  reise: "Mer informasjon om reise til og fra bryllupet kommer senere.",
+
   kart: {
     steder: [
       { navn: "Vielse", info: "Sted kommer", lat: null, lng: null, farge: "#E6E1BF" },
       { navn: "Krogerup Højskole", info: "Fest, overnatting og brunsj. Krogerupvej 13, 3050 Humlebæk", lat: 55.97352, lng: 12.53427, farge: "#DAE8F0" },
       { navn: "Humlebæk stasjon", info: "Tog langs kysten fra København og Helsingør", lat: 55.96374, lng: 12.53341, farge: "#E4E2DB" }
     ],
-    rute: []   // [[lat, lng], ...] fra vielse til fest
-  }
+    rute: []
+  },
+
+  sted: "Humlebæk, Danmark",
+  url: "https://matsblar01.github.io/Sigves-brullyp/"
 };
 </script>
 </head>
 <body>
 
-<header class="hero">
+<header class="hero" id="topp">
   <!-- Videoen legges i media/hav.mp4. Bildet vises til den er på plass. -->
-  <video autoplay muted loop playsinline preload="auto" poster="media/hav.jpg" aria-hidden="true">
+  <video id="video" muted loop playsinline preload="metadata" poster="media/hav.jpg" aria-hidden="true">
     <source src="media/hav.mp4" type="video/mp4">
   </video>
-  <div class="hero-text"><h1 style="font:inherit;margin:0">Vi gifter oss!</h1><p>17.07.2027.</p></div>
+  <div class="hero-inner">
+    <h1>Vi gifter oss!</h1>
+    <p class="names">Sofie &amp; Sigve</p>
+    <p class="date">17.07.2027</p>
+
+    <form class="gate" id="gate" novalidate>
+      <label for="kode">Skriv inn koden fra invitasjonen</label>
+      <input id="kode" name="kode" inputmode="numeric" autocomplete="off" autocapitalize="off" spellcheck="false">
+      <button class="btn" type="submit">Gå inn</button>
+      <p class="feil" id="kodeFeil" role="alert"></p>
+    </form>
+  </div>
+  <button class="ned" id="ned" aria-label="Les videre" hidden>↓</button>
 </header>
 
-<main>
-  <section class="col intro gap" id="intro" aria-label="Om oss"></section>
+<div id="innhold" hidden>
+  <div id="steg"></div>
+  <nav class="prikker skjult" id="prikker" aria-label="Avsnitt"></nav>
 
-  <figure class="photo-wide gap" style="margin-bottom:0">
-    <img src="media/surf.jpg" alt="Sofie og Sigve med surfebrett i havet" loading="lazy">
-  </figure>
-
-  <section class="col gap" aria-label="Når og hvor">
-    <div class="facts-wrap">
-      <div>
-        <dl class="facts" id="fakta"></dl>
+  <main class="rest" id="info">
+    <section class="col" aria-label="Påmelding">
+      <p class="frist">Svar innen <strong style="font-weight:500" id="frist"></strong></p>
+      <div class="actions">
         <button class="btn" id="aapne">Påmelding</button>
+        <button class="textlink" id="fristKal">+ frist i kalender</button>
       </div>
-      <div class="framed"><img src="media/krogerup.jpg" alt="Krogerup Højskole med blomstereng foran" loading="lazy"></div>
-    </div>
-  </section>
+      <p class="done" id="pameldt" hidden>✓ Du har sendt svar fra denne enheten.</p>
+    </section>
 
-  <section class="col gap" aria-labelledby="h-helg" style="margin-top:7rem">
-    <h2 id="h-helg">Bryllupshelgen</h2>
-    <dl class="days" id="helgen"></dl>
-  </section>
+    <section class="col gap" aria-labelledby="h-helg">
+      <h2 id="h-helg">Bryllupshelgen</h2>
+      <label class="bryter" style="margin-top:1.25rem">
+        <input type="checkbox" id="bareLor"><span class="spor" aria-hidden="true"></span>
+        <span>Vis bare lørdag</span>
+      </label>
+      <div class="faner" role="tablist" id="faner"></div>
+      <div id="paneler"></div>
+    </section>
 
-  <section class="col gap" aria-label="Praktisk informasjon">
-    <div class="boxes" id="info"></div>
-  </section>
+    <figure class="col gap" style="margin-bottom:0">
+      <div class="framed"><img src="media/krogerup.jpg" alt="Krogerup Højskole med blomstereng foran" width="1440" height="720" loading="lazy"></div>
+    </figure>
 
-  <section class="col gap" aria-labelledby="h-kart">
-    <h2 id="h-kart">Kart</h2>
-    <div class="map-frame"><div id="kart" role="region" aria-label="Kart over Humlebæk"></div></div>
-    <ul class="pins" id="pins"></ul>
-  </section>
-</main>
+    <section class="col gap" aria-label="Praktisk informasjon">
+      <div class="boxes">
+        <div class="box blue" id="boksOvernatting"><h3>Overnatting</h3></div>
+        <div class="box yellow"><h3>Reise</h3><p id="reise"></p></div>
+      </div>
+    </section>
 
-<footer class="col"><p>Sofie &amp; Sigve</p></footer>
+    <figure class="col gap photo-wide" style="margin-bottom:0">
+      <img src="media/surf.jpg" alt="Sofie og Sigve med surfebrett i havet" width="1320" height="756" loading="lazy">
+    </figure>
+
+    <section class="col gap" aria-labelledby="h-kart">
+      <h2 id="h-kart">Kart</h2>
+      <div class="map-frame"><div id="kart" role="region" aria-label="Kart over Humlebæk"></div></div>
+      <ul class="pins" id="pins"></ul>
+    </section>
+
+    <footer class="col"><p>Sofie &amp; Sigve</p></footer>
+  </main>
+
+  <button class="btn floating" id="flyt" hidden>Påmelding</button>
+</div>
 
 <dialog id="dlg" aria-labelledby="h-dlg">
+  <div class="dlg-top">
+    <h2 id="h-dlg">Påmelding</h2>
+    <button class="close" id="lukk" aria-label="Lukk">×</button>
+  </div>
   <div class="dlg">
-    <div class="dlg-top">
-      <h2 id="h-dlg">Påmelding</h2>
-      <button class="close" id="lukk" aria-label="Lukk">×</button>
-    </div>
-
     <form id="form" novalidate>
       <fieldset>
-        <legend>Dine opplysninger</legend>
-        <label class="field">Navn<input name="navn" autocomplete="name" required></label>
-        <label class="field">E-post<input type="email" name="epost" autocomplete="email" inputmode="email" required></label>
-        <label class="field">Telefon<input type="tel" name="telefon" autocomplete="tel" inputmode="tel"></label>
-      </fieldset>
-
-      <fieldset>
-        <legend>Melder du på andre?</legend>
-        <div class="radios">
-          <label><input type="radio" name="andre" value="nei" checked> Nei, bare meg</label>
-          <label><input type="radio" name="andre" value="ja"> Ja</label>
+        <legend>Kommer du?</legend>
+        <div class="valg">
+          <label><input type="radio" name="kommer" value="ja" checked> Ja, gleder meg!</label>
+          <label><input type="radio" name="kommer" value="nei"> Kan dessverre ikke</label>
         </div>
-        <label class="field" id="antallFelt" hidden>Hvor mange andre?
-          <select name="antall" id="antall"></select>
-        </label>
       </fieldset>
 
       <fieldset>
-        <legend>Mat, overnatting og brunsj</legend>
-        <p class="info" id="prisInfo"></p>
-        <div id="personer" style="display:grid;gap:.75rem"></div>
+        <legend>Dine opplysninger</legend>
+        <label class="field">Navn<input name="navn" autocomplete="name" required><span class="err"></span></label>
+        <label class="field">E-post<input type="email" name="epost" autocomplete="email" inputmode="email" required><span class="err"></span></label>
+        <label class="field"><span>Telefon <span class="muted">(valgfritt)</span></span><input type="tel" name="telefon" autocomplete="tel" inputmode="tel"></label>
       </fieldset>
 
-      <p class="muted" style="font-size:.85rem">Opplysningene brukes bare til planleggingen av bryllupet og slettes etterpå.</p>
+      <fieldset>
+        <legend id="hvemLegend">Hvem kommer?</legend>
+        <p class="info ja-only" id="dagInfo"></p>
+        <div id="personer" class="personer"></div>
+        <button type="button" class="add" id="leggTil">+ Legg til person</button>
+      </fieldset>
 
+      <p class="muted small">Opplysningene brukes bare til planleggingen av bryllupet og slettes etterpå.</p>
       <label class="hp" aria-hidden="true">Nettside <input name="nettside" tabindex="-1" autocomplete="off"></label>
 
-      <div><button type="submit" class="btn" id="send" style="margin-top:0">Send påmelding</button></div>
+      <div><button type="submit" class="btn" id="send">Send svar</button></div>
       <p class="status" id="status" role="status" aria-live="polite"></p>
     </form>
 
     <div class="takk" id="takk" hidden>
-      <p class="script">Tusen takk!</p>
-      <p>Påmeldingen er registrert. Vi gleder oss til å feire med dere.</p>
-      <button class="btn" id="ferdig">Lukk</button>
+      <p class="script" id="takkTittel">Tusen takk!</p>
+      <p id="takkTekst"></p>
+      <ul class="oppsummering" id="oppsummering"></ul>
+      <button class="btn" id="kalAlle">Legg i kalenderen</button>
+      <button class="btn" id="ferdig" style="background:transparent">Lukk</button>
     </div>
   </div>
 </dialog>
@@ -158,23 +199,131 @@ const C = {
 <script>
 const $ = (s, el = document) => el.querySelector(s);
 const esc = v => String(v ?? "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
-const MAKS = Math.max(1, Number(window.CONFIG?.maksPersoner) || 1);
+const CFG = window.CONFIG || {};
+const MAKS = Math.max(1, Number(CFG.maksPersoner) || 1);
+const APEN = CFG.paameldingApen !== false;
+const redusert = matchMedia("(prefers-reduced-motion: reduce)").matches;
+const lagre = (k, v) => { try { v == null ? localStorage.removeItem(k) : localStorage.setItem(k, v); } catch {} };
+const hent = k => { try { return localStorage.getItem(k); } catch { return null; } };
 
-/* ---------- Intro: avsnittene kommer frem ett og ett ---------- */
-$("#intro").innerHTML = C.intro.map(t => `<p>${esc(t)}</p>`).join("");
-const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add("vis"); io.unobserve(e.target); } }), { threshold: 0.6 });
-document.querySelectorAll("#intro p").forEach(p => io.observe(p));
+/* ============ Kode ============ */
+function laasOpp(animer) {
+  document.documentElement.classList.remove("laast");
+  $("#gate").hidden = true;
+  $("#innhold").hidden = false;
+  $("#ned").hidden = false;
+  lagre("bryllup-kode", CFG.kode);
+  startVideo();
+  if (animer) setTimeout(() => $("#steg").firstElementChild.scrollIntoView({ behavior: redusert ? "auto" : "smooth" }), 350);
+}
+const fraLenke = new URLSearchParams(location.search).get("kode");
+if (fraLenke === CFG.kode || hent("bryllup-kode") === CFG.kode) {
+  if (fraLenke) history.replaceState(null, "", location.pathname + location.hash);
+  laasOpp(false);
+} else {
+  startVideo();
+}
+$("#gate").addEventListener("submit", e => {
+  e.preventDefault();
+  if ($("#kode").value.trim() === CFG.kode) { $("#kodeFeil").textContent = ""; laasOpp(true); }
+  else {
+    $("#kodeFeil").textContent = "Feil kode. Sjekk invitasjonen.";
+    const g = $("#gate"); g.classList.remove("riste"); void g.offsetWidth; g.classList.add("riste");
+  }
+});
+$("#ned").onclick = () => $("#steg").firstElementChild.scrollIntoView({ behavior: redusert ? "auto" : "smooth" });
 
-/* ---------- Fakta ---------- */
-$("#fakta").innerHTML = C.fakta.map(([k, v]) => `<dt>${esc(k)}</dt><dd>${esc(v)}</dd>`).join("");
+function startVideo() {
+  const v = $("#video");
+  if (redusert || navigator.connection?.saveData) return;
+  v.preload = "auto"; v.play().catch(() => {});
+}
 
-/* ---------- Bryllupshelgen ---------- */
-$("#helgen").innerHTML = C.helgen.map(([d, t]) => `<div class="day"><dt>${esc(d)}</dt><dd>${esc(t)}</dd></div>`).join("");
+/* ============ Avsnitt, ett per skjerm ============ */
+$("#steg").innerHTML = C.intro.map((t, i) => `<section class="steg col" id="avsnitt-${i + 1}"><p>${esc(t)}</p></section>`).join("");
+$("#prikker").innerHTML = C.intro.map((_, i) => `<button aria-label="Avsnitt ${i + 1}"></button>`).join("");
+const stegEl = [...document.querySelectorAll(".steg")];
+const prikker = [...$("#prikker").children];
+prikker.forEach((b, i) => b.onclick = () => stegEl[i].scrollIntoView({ behavior: redusert ? "auto" : "smooth" }));
+const stegObs = new IntersectionObserver(es => es.forEach(e => {
+  if (!e.isIntersecting) return;
+  const i = stegEl.indexOf(e.target);
+  e.target.classList.add("vis");
+  prikker.forEach((b, j) => b.setAttribute("aria-current", i === j));
+}), { threshold: 0.6 });
+stegEl.forEach(s => stegObs.observe(s));
+// Prikkene vises bare mens man er i avsnittene
+const synlige = new Set();
+const prikkObs = new IntersectionObserver(es => {
+  es.forEach(e => e.isIntersecting ? synlige.add(e.target) : synlige.delete(e.target));
+  $("#prikker").classList.toggle("skjult", synlige.size === 0);
+}, { threshold: 0.3 });
+stegEl.forEach(s => prikkObs.observe(s));
 
-/* ---------- Infobokser ---------- */
-$("#info").innerHTML = C.info.map(b => `<div class="box ${b.farge}"><h3>${esc(b.tittel)}</h3><p>${esc(b.tekst)}</p></div>`).join("");
+/* ============ Kalender (.ics) ============ */
+function nesteDag(d) {
+  const t = new Date(Date.UTC(+d.slice(0, 4), +d.slice(4, 6) - 1, +d.slice(6, 8) + 1));
+  return t.toISOString().slice(0, 10).replace(/-/g, "");
+}
+function icsEsc(s) { return String(s).replace(/\\/g, "\\\\").replace(/,/g, "\\,").replace(/;/g, "\\;").replace(/\n/g, "\\n"); }
+function lastNedIcs(hendelser, filnavn) {
+  const linjer = ["BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//Sofie og Sigve//Bryllup//NO", "CALSCALE:GREGORIAN"];
+  hendelser.forEach(h => linjer.push("BEGIN:VEVENT", `UID:${h.dato}-${h.id}@sofie-sigve`, "DTSTAMP:20261101T000000Z",
+    `DTSTART;VALUE=DATE:${h.dato}`, `DTEND;VALUE=DATE:${nesteDag(h.dato)}`,
+    `SUMMARY:${icsEsc(h.tittel)}`, `LOCATION:${icsEsc(h.sted || C.sted)}`, `DESCRIPTION:${icsEsc(h.tekst || "")}`, "END:VEVENT"));
+  linjer.push("END:VCALENDAR");
+  const url = URL.createObjectURL(new Blob([linjer.join("\r\n")], { type: "text/calendar;charset=utf-8" }));
+  const a = Object.assign(document.createElement("a"), { href: url, download: filnavn });
+  document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(url), 1500);
+}
+$("#frist").textContent = C.svarfrist.tekst;
+$("#fristKal").onclick = () => lastNedIcs([{ id: "frist", dato: C.svarfrist.dato,
+  tittel: "Svarfrist: bryllup Sofie & Sigve", tekst: "Meld deg på her: " + C.url }], "svarfrist-sofie-sigve.ics");
 
-/* ---------- Kart ---------- */
+/* ============ Faner og «Vis bare lørdag» ============ */
+const faner = $("#faner"), paneler = $("#paneler");
+faner.innerHTML = C.dager.map(d => `<button role="tab" id="fane-${d.id}" aria-controls="panel-${d.id}" aria-selected="false" tabindex="-1" class="${d.torfre ? "torfre" : ""}">${esc(d.fane)}</button>`).join("");
+paneler.innerHTML = C.dager.map(d => `
+  <div class="panel ${d.torfre ? "torfre" : ""}" role="tabpanel" id="panel-${d.id}" aria-labelledby="fane-${d.id}" hidden>
+    <h3>${esc(d.tittel)}</h3><p>${esc(d.tekst)}</p>
+    ${d.rader.length ? `<dl>${d.rader.map(([k, v]) => `<dt>${esc(k)}</dt><dd>${esc(v)}</dd>`).join("")}</dl>` : ""}
+  </div>`).join("");
+function velgFane(id, fokus) {
+  C.dager.forEach(d => {
+    const on = d.id === id;
+    const f = $("#fane-" + d.id);
+    f.setAttribute("aria-selected", on); f.tabIndex = on ? 0 : -1;
+    $("#panel-" + d.id).hidden = !on;
+    if (on && fokus) f.focus();
+  });
+}
+faner.addEventListener("click", e => { const b = e.target.closest("[role=tab]"); if (b) velgFane(b.id.slice(5)); });
+faner.addEventListener("keydown", e => {
+  if (!["ArrowLeft", "ArrowRight"].includes(e.key)) return;
+  const synligeFaner = [...faner.children].filter(b => b.offsetParent !== null);
+  const i = synligeFaner.indexOf(document.activeElement);
+  const n = synligeFaner[(i + (e.key === "ArrowRight" ? 1 : -1) + synligeFaner.length) % synligeFaner.length];
+  velgFane(n.id.slice(5), true);
+});
+function settBareLordag(on) {
+  $("#bareLor").checked = on;
+  document.body.classList.toggle("bare-lordag", on);
+  lagre("bryllup-barelordag", on ? "1" : null);
+  const aktiv = C.dager.find(d => $("#fane-" + d.id).getAttribute("aria-selected") === "true");
+  if (on && aktiv?.torfre) velgFane("lor");
+}
+$("#bareLor").addEventListener("change", e => settBareLordag(e.target.checked));
+velgFane("lor");
+settBareLordag(hent("bryllup-barelordag") === "1");
+
+/* ============ Infobokser ============ */
+const o = C.overnatting;
+$("#boksOvernatting").insertAdjacentHTML("beforeend", `
+  <h4>Lørdag–søndag</h4><p>${esc(o.lorSon)}${o.pris ? ` Pris: ${esc(o.pris)}.` : " Pris kommer."}</p>
+  <div class="torfre"><h4 style="margin-top:1.25rem">Torsdag og fredag</h4><p>${esc(o.torFre)}</p></div>`);
+$("#reise").textContent = C.reise;
+
+/* ============ Kart ============ */
 (function () {
   const steder = C.kart.steder.filter(s => s.lat != null);
   $("#pins").innerHTML = C.kart.steder.map(s => `
@@ -182,91 +331,157 @@ $("#info").innerHTML = C.info.map(b => `<div class="box ${b.farge}"><h3>${esc(b.
     <div>${esc(s.navn)}<br><span class="muted">${esc(s.info)}</span>
     ${s.lat != null ? `<br><a href="https://www.google.com/maps/search/?api=1&query=${s.lat},${s.lng}" target="_blank" rel="noopener">Åpne i Google Maps</a>` : ""}</div></li>`).join("");
   if (!window.L || !steder.length) return;
-  const map = L.map("kart", { scrollWheelZoom: false, dragging: !L.Browser.mobile, tap: false });
-  L.tileLayer("https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png", {
-    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>',
-    subdomains: "abcd", maxZoom: 19
-  }).addTo(map);
-  const pkt = [];
-  steder.forEach(s => {
-    const icon = L.divIcon({ className: "", html: `<div class="pin-icon" style="background:${s.farge}"></div>`, iconSize: [16, 16], iconAnchor: [8, 8] });
-    L.marker([s.lat, s.lng], { icon }).addTo(map).bindPopup(`${esc(s.navn)}<br>${esc(s.info)}`);
-    pkt.push([s.lat, s.lng]);
-  });
-  if (C.kart.rute.length > 1) {
-    L.polyline(C.kart.rute, { color: "#6E5C5E", weight: 2.5, dashArray: "6 8" }).addTo(map);
-    pkt.push(...C.kart.rute);
-  }
-  pkt.length > 1 ? map.fitBounds(pkt, { padding: [50, 50] }) : map.setView(pkt[0], 15);
+  let map;
+  // Kartet lages først når innholdet er synlig (etter koden)
+  const lag = () => {
+    if (map) return;
+    map = L.map("kart", { scrollWheelZoom: false, dragging: !L.Browser.mobile, tap: false });
+    L.tileLayer("https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png", {
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>',
+      subdomains: "abcd", maxZoom: 19
+    }).addTo(map);
+    const pkt = [];
+    steder.forEach(s => {
+      const icon = L.divIcon({ className: "", html: `<div class="pin-icon" style="background:${s.farge}"></div>`, iconSize: [16, 16], iconAnchor: [8, 8] });
+      L.marker([s.lat, s.lng], { icon }).addTo(map).bindPopup(`${esc(s.navn)}<br>${esc(s.info)}`);
+      pkt.push([s.lat, s.lng]);
+    });
+    if (C.kart.rute.length > 1) { L.polyline(C.kart.rute, { color: "#6E5C5E", weight: 2.5, dashArray: "6 8" }).addTo(map); pkt.push(...C.kart.rute); }
+    pkt.length > 1 ? map.fitBounds(pkt, { padding: [50, 50] }) : map.setView(pkt[0], 15);
+  };
+  new IntersectionObserver(([e]) => { if (e.isIntersecting) lag(); }, { rootMargin: "300px" }).observe($("#kart"));
 })();
 
-/* ---------- Påmelding ---------- */
+/* ============ Påmelding ============ */
 const dlg = $("#dlg"), form = $("#form"), personerEl = $("#personer");
-$("#prisInfo").textContent = `Overnatting på Krogerup Højskole fra lørdag til søndag: ${C.skjema.krogerupPris || "pris kommer"}.`;
+$("#dagInfo").textContent = "Lørdag er alle med på. Velg i tillegg dagene hver person kommer, og om de vil overnatte på Krogerup lørdag–søndag.";
+const prisTekst = o.pris ? ` (${o.pris})` : " (pris kommer)";
 
-$("#antall").innerHTML = Array.from({ length: Math.max(0, MAKS - 1) }, (_, i) => `<option value="${i + 1}">${i + 1}</option>`).join("");
-if (MAKS < 2) form.querySelector(".radios").closest("fieldset").hidden = true;
-
-function personKort(i) {
+function personKort(i, arv) {
   const d = document.createElement("div");
   d.className = "person";
-  d.innerHTML = `
-    ${i === 0 ? `<strong>Deg</strong>` : `<label class="field">Navn på person ${i + 1}<input name="pnavn" required></label>`}
-    <label class="field">Matallergier og andre mathensyn <span class="muted">(valgfritt)</span><input name="allergier"></label>
-    <label class="check"><input type="checkbox" name="overnatting"> Overnatter på Krogerup lørdag–søndag</label>
-    <label class="check"><input type="checkbox" name="brunsj"> ${esc(C.skjema.brunsjTekst)}</label>`;
+  d.innerHTML = (i === 0
+    ? `<div class="person-top"><strong class="deg">Deg</strong></div>`
+    : `<div class="person-top"><strong>Person ${i + 1}</strong><button type="button" class="fjern">Fjern</button></div>
+       <label class="field">Navn<input name="pnavn" required><span class="err"></span></label>`) + `
+    <div class="ja-only">
+      <p class="small" style="margin-bottom:.45rem">Hvilke dager?</p>
+      <div class="dager">
+        <label class="chip"><input type="checkbox" name="torsdag"><span>Tor</span></label>
+        <label class="chip"><input type="checkbox" name="fredag"><span>Fre</span></label>
+        <label class="chip"><input type="checkbox" checked disabled><span>Lør ✓</span></label>
+        <label class="chip"><input type="checkbox" name="brunsj"><span>Søn brunsj</span></label>
+      </div>
+      <p class="hint" hidden style="margin-top:.6rem">Overnatting torsdag og fredag ordner dere selv.</p>
+    </div>
+    <label class="check ja-only"><input type="checkbox" name="overnatting"> Overnatter på Krogerup lør–søn${esc(prisTekst)}</label>
+    <label class="field ja-only"><span>Matallergier og andre mathensyn <span class="muted">(valgfritt)</span></span><input name="allergier"></label>`;
+  if (arv) ["torsdag", "fredag", "brunsj", "overnatting"].forEach(n => d.querySelector(`[name=${n}]`).checked = arv[n]);
+  const oppdaterHint = () => $(".hint", d).hidden = !(d.querySelector("[name=torsdag]").checked || d.querySelector("[name=fredag]").checked);
+  d.addEventListener("change", oppdaterHint); oppdaterHint();
+  $(".fjern", d)?.addEventListener("click", () => { d.remove(); nummerer(); $("#leggTil").focus(); });
   return d;
 }
-function tegnPersoner() {
-  const andre = form.andre.value === "ja" ? Number($("#antall").value || 0) : 0;
-  $("#antallFelt").hidden = form.andre.value !== "ja";
-  const n = 1 + andre;
-  while (personerEl.children.length < n) personerEl.appendChild(personKort(personerEl.children.length));
-  while (personerEl.children.length > n) personerEl.lastElementChild.remove();
+function lesPerson(d, i, navn) {
+  const v = n => d.querySelector(`[name=${n}]`)?.checked || false;
+  return { navn: i === 0 ? navn : d.querySelector("[name=pnavn]").value.trim(),
+    torsdag: v("torsdag"), fredag: v("fredag"), brunsj: v("brunsj"), overnatting: v("overnatting"),
+    allergier: d.querySelector("[name=allergier]").value.trim() };
 }
-form.addEventListener("change", e => { if (e.target.name === "andre" || e.target.id === "antall") tegnPersoner(); });
-tegnPersoner();
+function nummerer() {
+  [...personerEl.children].forEach((d, i) => { if (i) $(".person-top strong", d).textContent = `Person ${i + 1}`; });
+  $("#leggTil").hidden = personerEl.children.length >= MAKS;
+}
+function jaNei() {
+  const nei = form.kommer.value === "nei";
+  form.classList.toggle("nei", nei);
+  $("#hvemLegend").textContent = nei ? "Hvem svarer du for?" : "Hvem kommer?";
+}
+function nullstill() {
+  form.reset(); personerEl.innerHTML = ""; personerEl.appendChild(personKort(0)); nummerer(); jaNei();
+  form.querySelectorAll(".invalid").forEach(el => el.classList.remove("invalid"));
+  form.querySelectorAll(".err").forEach(el => el.textContent = "");
+  $("#status").textContent = "";
+}
+nullstill();
 
-if (window.CONFIG?.paameldingApen === false) {
-  const b = $("#aapne"); b.textContent = "Påmelding åpner snart"; b.disabled = true; b.style.cursor = "default";
-}
-$("#aapne").onclick = () => { if (window.CONFIG?.paameldingApen !== false) dlg.showModal(); };
-$("#lukk").onclick = () => dlg.close();
-$("#ferdig").onclick = () => dlg.close();
-dlg.addEventListener("close", () => {
-  if (!$("#takk").hidden) { form.reset(); tegnPersoner(); $("#takk").hidden = true; form.hidden = false; $("#status").textContent = ""; }
+$("#leggTil").onclick = () => {
+  const forste = lesPerson(personerEl.firstElementChild, 0, "");
+  personerEl.appendChild(personKort(personerEl.children.length, forste)); nummerer();
+  personerEl.lastElementChild.querySelector("[name=pnavn]").focus();
+};
+form.addEventListener("change", e => { if (e.target.name === "kommer") jaNei(); });
+form.navn.addEventListener("input", () => { const n = form.navn.value.trim(); $(".deg", personerEl).textContent = n ? `Deg (${n})` : "Deg"; });
+form.addEventListener("input", e => {
+  if (e.target.classList.contains("invalid")) { e.target.classList.remove("invalid"); const er = e.target.parentElement.querySelector(".err"); if (er) er.textContent = ""; }
 });
 
-const sb = (window.supabase && window.CONFIG?.supabaseUrl && !CONFIG.supabaseUrl.includes("DITT-PROSJEKT"))
-  ? window.supabase.createClient(CONFIG.supabaseUrl, CONFIG.supabaseAnonKey) : null;
+function aapne() { if (APEN) dlg.showModal(); }
+$("#aapne").onclick = aapne; $("#flyt").onclick = aapne;
+$("#lukk").onclick = () => dlg.close(); $("#ferdig").onclick = () => dlg.close();
+dlg.addEventListener("click", e => { if (e.target === dlg) dlg.close(); });
+dlg.addEventListener("close", () => { if (!$("#takk").hidden) { nullstill(); $("#takk").hidden = true; form.hidden = false; } });
+if (!APEN) ["#aapne", "#flyt"].forEach(id => { const b = $(id); b.textContent = "Påmelding åpner snart"; b.disabled = true; });
+if (hent("bryllup-pameldt")) $("#pameldt").hidden = false;
 
+const flyt = $("#flyt");
+// Vises bare når hovedknappen er scrollet forbi (ligger over skjermen)
+new IntersectionObserver(([e]) => { flyt.hidden = !APEN || e.isIntersecting || e.boundingClientRect.top >= 0; }).observe($("#aapne"));
+
+function markerFeil(input, tekst) { input.classList.add("invalid"); const er = input.parentElement.querySelector(".err"); if (er) er.textContent = tekst; }
+
+let sisteSvar = null;
 form.addEventListener("submit", async e => {
   e.preventDefault();
   const st = $("#status"); st.className = "status"; st.textContent = "";
-  const feil = m => { st.textContent = m; st.classList.add("feil"); };
+  form.querySelectorAll(".invalid").forEach(el => el.classList.remove("invalid"));
+  form.querySelectorAll(".err").forEach(el => el.textContent = "");
 
   const navn = form.navn.value.trim(), epost = form.epost.value.trim();
-  if (!navn) return feil("Fyll inn navnet ditt.");
-  if (!/^\S+@\S+\.\S+$/.test(epost)) return feil("Fyll inn en gyldig e-postadresse.");
+  if (!navn) markerFeil(form.navn, "Fyll inn navnet ditt.");
+  if (!/^\S+@\S+\.\S+$/.test(epost)) markerFeil(form.epost, "Fyll inn en gyldig e-postadresse.");
+  personerEl.querySelectorAll("[name=pnavn]").forEach(inp => { if (!inp.value.trim()) markerFeil(inp, "Fyll inn navn."); });
+  const forste = form.querySelector(".invalid");
+  if (forste) { forste.focus(); st.textContent = "Noen felt mangler. Se markeringene over."; st.classList.add("feil"); return; }
 
-  const personer = [...personerEl.children].map((d, i) => ({
-    navn: i === 0 ? navn : d.querySelector('[name="pnavn"]').value.trim(),
-    allergier: d.querySelector('[name="allergier"]').value.trim(),
-    overnatting: d.querySelector('[name="overnatting"]').checked,
-    brunsj: d.querySelector('[name="brunsj"]').checked
-  }));
-  if (personer.some(p => !p.navn)) return feil("Fyll inn navn på alle du melder på.");
+  const kommer = form.kommer.value === "ja";
+  const personer = [...personerEl.children].map((d, i) => lesPerson(d, i, navn));
+  const payload = { kode: CFG.kode, kommer, navn, epost, telefon: form.telefon.value.trim(), personer, nettside: form.nettside.value };
 
-  const visTakk = () => { form.hidden = true; $("#takk").hidden = false; dlg.scrollTop = 0; };
-  if (form.nettside.value) return visTakk();     // robotfelle
-  if (!sb) return feil("Påmeldingen er ikke koblet til databasen ennå.");
-
+  if (!CFG.scriptUrl || CFG.scriptUrl.includes("LIM-INN")) { st.textContent = "Påmeldingen er ikke koblet til regnearket ennå."; st.classList.add("feil"); return; }
   const btn = $("#send"); btn.disabled = true; btn.textContent = "Sender …";
-  const { error } = await sb.rpc("send_svar", { p: { navn, epost, telefon: form.telefon.value.trim(), personer } });
-  btn.disabled = false; btn.textContent = "Send påmelding";
-  if (error) return feil("Påmeldingen ble ikke sendt. Sjekk nettforbindelsen og prøv igjen.");
-  visTakk();
+  let ok = false;
+  try {
+    const r = await fetch(CFG.scriptUrl, { method: "POST", body: JSON.stringify(payload) });   // text/plain: ingen CORS-forhåndssjekk
+    const data = await r.json(); ok = data.ok;
+  } catch {}
+  btn.disabled = false; btn.textContent = "Send svar";
+  if (!ok) { st.textContent = "Svaret ble ikke sendt. Sjekk nettforbindelsen og prøv igjen."; st.classList.add("feil"); return; }
+
+  lagre("bryllup-pameldt", "1"); $("#pameldt").hidden = false;
+  sisteSvar = { kommer, personer };
+  // Kommer ingen torsdag eller fredag: vis bare lørdag
+  if (kommer && !personer.some(p => p.torsdag || p.fredag)) settBareLordag(true);
+
+  $("#takkTittel").textContent = kommer ? "Tusen takk!" : "Takk for beskjed";
+  $("#takkTekst").textContent = kommer ? "Svaret er registrert. Vi gleder oss til å feire med dere." : "Så synd at dere ikke kan komme. Dere blir savnet!";
+  const dagNavn = p => [p.torsdag && "tor", p.fredag && "fre", "lør", p.brunsj && "søn brunsj"].filter(Boolean).join(", ");
+  $("#oppsummering").innerHTML = personer.map(p => `<li>${esc(p.navn)}${kommer ? `: <span class="muted">${dagNavn(p)}${p.overnatting ? ", overnatter" : ""}</span>` : ""}</li>`).join("");
+  $("#kalAlle").hidden = !kommer;
+  form.hidden = true; $("#takk").hidden = false; dlg.scrollTop = 0;
 });
+
+// Kalender etter svar: dagene minst én i påmeldingen kommer
+$("#kalAlle").onclick = () => {
+  if (!sisteSvar) return;
+  const p = sisteSvar.personer;
+  const med = { tor: p.some(x => x.torsdag), fre: p.some(x => x.fredag), lor: true, son: p.some(x => x.brunsj) };
+  const hendelser = C.dager.filter(d => med[d.id]).map(d => ({
+    id: d.id, dato: d.dato, tittel: d.kalender,
+    tekst: d.tekst + (d.torfre ? " Overnatting ordnes selv." : "") + " Mer info: " + C.url
+  }));
+  lastNedIcs(hendelser, "bryllupshelg-sofie-sigve.ics");
+};
 </script>
 </body>
 </html>

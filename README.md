@@ -1,83 +1,61 @@
-# Bryllupsside – Sofie & Sigve
+# Bryllupsside – Sofie & Sigve (versjon 2)
 
-Statisk nettside på GitHub Pages med påmelding og adminside. Påmeldingene lagres i Supabase.
+Statisk nettside på GitHub Pages. Gjestene går inn med en felles kode, og påmeldingene lagres i et Google Regneark.
 
 | Fil | Hva |
 |---|---|
-| `index.html` | Gjestesiden. Alt innhold ligger i `C`-objektet øverst. |
-| `admin.html` | Oversikt over påmeldinger, allergier, overnatting og brunsj. CSV-eksport. Krever innlogging. |
+| `index.html` | Hele siden. Alt innhold (tekster, program, overnatting, kart) ligger i `C`-objektet øverst. |
 | `style.css` | Utseende. Fargene ligger øverst. |
-| `config.js` | Supabase-nøkler, maks antall per påmelding og bryteren `paameldingApen`. |
-| `schema.sql` | Databaseoppsett. Kjøres én gang. |
-| `media/` | `hav.jpg` og `hav.mp4` (toppbanner), `surf.jpg`, `krogerup.jpg`. |
+| `config.js` | Koden, lenken til regnearket, maks antall per påmelding og bryteren `paameldingApen`. |
+| `apps-script.gs` | Limes inn i Google Apps Script. Tar imot påmeldinger og lager fanene i regnearket. |
+| `media/` | `hav.jpg` / `hav.mp4` (toppbanner), `surf.jpg`, `krogerup.jpg`, `deling.jpg` (forhåndsvisning ved deling). |
 | `fonts/` | `HAD-Script.woff2` (håndskriften). Reservefont: Caveat. |
-| `.github/workflows/ping.yml` | Holder Supabase aktiv. Slås på før lansering. |
 
 ---
 
-## Fase 1: Utvikling (nå)
+## 1. Regnearket (ca. 15 min)
 
-### 1. Supabase (ca. 15 min)
-1. supabase.com → logg inn med GitHub → **New project**. Velg region **Central EU (Frankfurt)** eller **North EU (Stockholm)**, og lagre databasepassordet.
-2. **SQL Editor → New query**: lim inn hele `schema.sql` og trykk **Run**.
-3. Kjør dette med deres egne adresser:
-   ```sql
-   insert into public.admins (epost) values ('mats@...'), ('anders@...');
-   ```
-4. **Authentication → Users → Add user → Create new user** for hver av dere, med **Auto Confirm User** på.
-5. **Project Settings → API**: kopier *Project URL* og *anon/publishable key* inn i `config.js`. Bruk aldri *service_role/secret key*.
+1. Lag et nytt Google Regneark, for eksempel «Bryllup – påmeldinger».
+2. **Utvidelser → Apps Script**. Slett det som står der, lim inn hele `apps-script.gs` og lagre (Ctrl+S).
+3. Velg **oppsett** i nedtrekkslisten øverst og trykk **Kjør**. Godkjenn tilgang når Google spør (se punkt 5). Regnearket får da fanene **Oversikt**, **Svar** og **Innstillinger**.
+4. **Distribuer → Ny distribusjon** → tannhjulet → **Nettapp**:
+   - *Kjør som:* Meg
+   - *Hvem har tilgang:* Alle
+   - Trykk **Distribuer** og kopier **nettapp-URL-en** (slutter på `/exec`).
+5. Google advarer om at appen ikke er verifisert. Det er normalt for egne script: **Avansert → Gå til … (ikke trygg) → Tillat**.
+6. Lim inn URL-en i `config.js` under `scriptUrl`.
 
-### 2. GitHub Pages (ca. 10 min)
-1. Lag et **offentlig** repo på GitHub, for eksempel `bryllup`, og push hele mappen.
-2. **Settings → Pages → Source: Deploy from a branch → `main` / root → Save**.
-3. Etter et minutt ligger siden på `https://<brukernavn>.github.io/bryllup/`.
-4. I Supabase: **Authentication → URL Configuration**:
-   - *Site URL*: adressen fra punkt 3.
-   - *Redirect URLs*: legg til `https://<brukernavn>.github.io/bryllup/admin.html`.
+**Koden** fra invitasjonen ligger i fanen **Innstillinger**, celle B1, og i `config.js`. Endres den, må den endres begge steder.
 
-### 3. Jobbe lokalt
-```bash
-python3 -m http.server 8000
-```
-Åpne `http://localhost:8000`. Push til GitHub bare når Sofie og Sigve skal se en ny versjon.
+**Endrer du scriptet senere:** Distribuer → Administrer distribusjoner → blyanten → Versjon: *Ny versjon* → Distribuer. URL-en forblir den samme.
 
-Legg også til `http://localhost:8000/admin.html` under *Redirect URLs* hvis du vil teste adminsiden lokalt.
+## 2. Publiser
 
-Supabase pauser prosjektet etter en uke uten aktivitet. Under utvikling er det greit: trykk **Resume project** når du trenger det igjen.
+Last opp alle filene til GitHub-repoet (**Add file → Upload files**). Siden ligger på
+`https://matsblar01.github.io/Sigves-brullyp/`
 
----
+Slett disse fra repoet hvis de ligger der fra versjon 1: `admin.html`, `schema.sql`, `.github/`.
 
-## Fase 2: Venteperioden (måneder)
+## 3. Test
 
-- Vil dere at siden skal være ute uten påmelding: sett `paameldingApen: false` i `config.js`. Knappen viser da «Påmelding åpner snart».
-- Supabase blir pauset. Et pauset prosjekt kan startes igjen i 90 dager. Har det gått lengre tid, oppretter du et nytt prosjekt, kjører `schema.sql` på nytt og oppdaterer `config.js`. Du mister bare testdata.
+- [ ] Feil kode gir feilmelding, riktig kode slipper inn (og huskes ved neste besøk)
+- [ ] Skrolling låser seg på hvert avsnitt, deretter fri skrolling
+- [ ] «Vis bare lørdag» skjuler torsdag og fredag
+- [ ] Påmelding: én person, flere personer, og «Kan dessverre ikke»
+- [ ] Svarene havner i fanen **Svar**, og **Oversikt** teller riktig
+- [ ] «Legg i kalenderen» fungerer på iPhone og Android
+- [ ] Slett testradene i **Svar** før lansering
 
----
+## Deling og tilgang
 
-## Fase 3: Lansering (2–3 uker før invitasjonene)
-
-1. Start Supabase igjen, eller opprett det på nytt.
-2. Slå på ping-jobben:
-   - I GitHub: **Settings → Secrets and variables → Actions** → legg inn `SUPABASE_URL` og `SUPABASE_ANON_KEY`.
-   - **Actions → Hold Supabase våken → Run workflow**. Sjekk at den blir grønn.
-3. Sett `paameldingApen: true`.
-4. Test:
-   - [ ] iPhone (Safari) og Android (Chrome): video, skjema, kart
-   - [ ] Påmelding for én person og for flere
-   - [ ] Admininnlogging for både deg og Anders
-   - [ ] CSV-eksport åpner riktig i Excel
-   - [ ] Slett alle testpåmeldinger
-5. Valgfritt eget domene: **Settings → Pages → Custom domain**. Husk å oppdatere *Site URL* og *Redirect URLs* i Supabase.
-
-### Mens påmeldingen er åpen
-- Sjekk av og til under **Actions** at ping-jobben går. GitHub kan slå av planlagte jobber i repoer uten aktivitet, og en liten commit innimellom holder den i gang.
-- Ta CSV-eksport jevnlig, og en ekstra etter svarfristen 17. februar.
-- Får ikke Anders innloggingslenken: inviter ham som medlem i Supabase-organisasjonen.
-
-### Etter bryllupet
-Eksporter det dere trenger, og slett Supabase-prosjektet. Allergiopplysninger skal ikke ligge lagret lenger enn nødvendig.
-
----
+- Del regnearket med Sigve, Sofie og Anders (**Del**, øverst til høyre).
+- Ikke endre kolonnene i **Svar**. Vil dere jobbe videre med listen, for eksempel bordplassering, lag en egen fane som henter data fra **Svar**.
+- Lenke som slipper gjester rett inn: `https://matsblar01.github.io/Sigves-brullyp/?kode=123`
 
 ## Oppdatere innhold
-Endre `C`-objektet i `index.html`, eller be Claude gjøre det, og push. Siden oppdateres etter et minutt.
+
+Endre `C`-objektet i `index.html`, eller be Claude gjøre det, og last opp filen på nytt.
+
+## Etter bryllupet
+
+Slett regnearket, eller i det minste kolonnen med allergier. Allergiopplysninger skal ikke ligge lagret lenger enn nødvendig.
