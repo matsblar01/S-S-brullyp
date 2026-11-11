@@ -3,12 +3,12 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Vi gifter oss! Sofie & Sigve, 17.07.2027</title>
+<title>Bryllupsinvitasjon – Sofie & Sigve, 17.07.2027</title>
 <meta name="description" content="Sofie og Sigve gifter seg 17. juli 2027 i Humlebæk, Danmark.">
 <meta name="robots" content="noindex">
-<meta name="theme-color" content="#E4E2DB">
+<meta name="theme-color" content="#ECE4D9">
 <meta property="og:type" content="website">
-<meta property="og:title" content="Vi gifter oss! Sofie & Sigve">
+<meta property="og:title" content="Bryllupsinvitasjon – Sofie & Sigve">
 <meta property="og:description" content="17. juli 2027 i Humlebæk, Danmark. Bruk koden fra invitasjonen.">
 <meta property="og:image" content="https://matsblar01.github.io/Sigves-brullyp/media/deling.jpg">
 <meta property="og:url" content="https://matsblar01.github.io/Sigves-brullyp/">
@@ -16,7 +16,7 @@
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌊</text></svg>">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;500&family=Caveat&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,300..600,0..100,0..1;1,9..144,300..600,0..100,0..1&family=Caveat&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
 <link rel="stylesheet" href="style.css">
 <script src="config.js"></script>
@@ -26,6 +26,7 @@
    INNHOLD – alt som står på siden ligger her.
    ============================================================ */
 const C = {
+  // Om oss: ett avsnitt per linje
   intro: [
     "På en surfetur til Hoddevik for 8 år siden traff vi hverandre, to ferske studenter på et nytt eventyr sammen – det skulle ikke bli det siste.",
     "Tilbake i Trondheim ble vennskap til kjærlighet. Vi flyttet sammen og ble hverandres nærmeste venner og tryggeste partnere.",
@@ -33,25 +34,42 @@ const C = {
     "Sommeren 2027 skal vi gifte oss, og alle dere som vi er så glade i, er invitert."
   ],
 
-  svarfrist: { tekst: "17. februar", dato: "20270217" },
+  svarfrist: { tekst: "17. februar 2027", dato: "20270217" },
 
-  // Programmet. torfre: true = skjules med «Vis bare lørdag».
+  bryllupsdagen: {
+    dato: "17. juli",
+    tekst: [
+      "Vielse, middag og fest – alt i gangavstand til Humlebæk sentrum og Krogerup Højskole.",
+      "Mer tekst kommer."
+    ]
+  },
+
+  // Tidslinjen. «dag» settes på første punkt hver dag.
+  tidslinje: [
+    { dag: "Lørdag 17. juli", tid: "13:00", tittel: "Vielse", sted: "Sted kommer" },
+    { tid: "15:30", tittel: "Mottakelse", sted: "Krogerup Højskole" },
+    { tid: "17:30", tittel: "Middag", sted: "Krogerup Højskole" },
+    { tid: "Etter middag", tittel: "Fest", sted: "Krogerup Højskole" },
+    { dag: "Søndag 18. juli", tid: "12:00", tittel: "Brunsj", sted: "Krogerup Højskole" }
+  ],
+
+  dageneForIntro: "For dere som kommer tidligere, er det et lavterskel opplegg torsdag og fredag.",
+
+  // Brukes av «Dagene før», påmeldingen og kalenderen. torfre: true = skjules med «Vis bare lørdag».
   dager: [
     { id: "tor", fane: "Tor 15.", dato: "20270715", torfre: true,
       tittel: "Sammenkomst", tekst: "Lavterskel sammenkomst for dere som allerede er i Danmark.",
-      rader: [["Tid", "TBA"], ["Sted", "TBA"], ["Overnatting", "Ordnes selv"]],
+      rader: [["Tid", "TBA"], ["Sted", "TBA"]],
       kalender: "Sammenkomst før bryllupet (Sofie & Sigve)" },
     { id: "fre", fane: "Fre 16.", dato: "20270716", torfre: true,
       tittel: "Lavterskel", tekst: "Mer informasjon kommer.",
-      rader: [["Tid", "TBA"], ["Sted", "TBA"], ["Overnatting", "Ordnes selv"]],
+      rader: [["Tid", "TBA"], ["Sted", "TBA"]],
       kalender: "Bryllupshelg: fredag (Sofie & Sigve)" },
     { id: "lor", fane: "Lør 17.", dato: "20270717",
-      tittel: "Den store dagen", tekst: "Vielse, middag og fest – alt i gangavstand til Humlebæk sentrum og Krogerup Højskole.",
-      rader: [["Vielse", "TBA"], ["Fest", "Krogerup Højskole"], ["Sted", "Humlebæk, Danmark"], ["Overnatting", "Krogerup, velges i påmeldingen"]],
+      tittel: "Bryllupsdagen", tekst: "Vielse 13:00, mottakelse 15:30, middag 17:30, fest etter middag.",
       kalender: "Bryllup Sofie & Sigve" },
     { id: "son", fane: "Søn 18.", dato: "20270718",
-      tittel: "Brunsj", tekst: "Brunsj på Krogerup Højskole.",
-      rader: [["Tid", "TBA"]],
+      tittel: "Brunsj", tekst: "Brunsj på Krogerup Højskole kl. 12:00.",
       kalender: "Brunsj – Krogerup Højskole (Sofie & Sigve)" }
   ],
 
@@ -66,8 +84,8 @@ const C = {
   kart: {
     steder: [
       { navn: "Vielse", info: "Sted kommer", lat: null, lng: null, farge: "#E6E1BF" },
-      { navn: "Krogerup Højskole", info: "Fest, overnatting og brunsj. Krogerupvej 13, 3050 Humlebæk", lat: 55.97352, lng: 12.53427, farge: "#DAE8F0" },
-      { navn: "Humlebæk stasjon", info: "Tog langs kysten fra København og Helsingør", lat: 55.96374, lng: 12.53341, farge: "#E4E2DB" }
+      { navn: "Krogerup Højskole", info: "Fest, overnatting og brunsj. Krogerupvej 13, 3050 Humlebæk", lat: 55.97352, lng: 12.53427, farge: "#D6E3EA" },
+      { navn: "Humlebæk stasjon", info: "Tog langs kysten fra København og Helsingør", lat: 55.96374, lng: 12.53341, farge: "#ECE4D9" }
     ],
     rute: []
   },
@@ -100,59 +118,74 @@ const C = {
 </header>
 
 <div id="innhold" hidden>
-  <div id="steg"></div>
-  <nav class="prikker skjult" id="prikker" aria-label="Avsnitt"></nav>
+  <nav class="toc skjult" id="toc" aria-label="Innhold"><ol></ol></nav>
 
-  <main class="rest" id="info">
-    <section class="col" aria-label="Påmelding">
-      <p class="frist">Svar innen <strong style="font-weight:500" id="frist"></strong></p>
+  <main class="side">
+    <!-- Svar -->
+    <section class="seksjon svar" id="svar" data-toc="Svar">
+      <p class="frist">Svar innen <span id="frist"></span></p>
       <div class="actions">
-        <button class="btn" id="aapne">Påmelding</button>
-        <button class="textlink" id="fristKal">+ frist i kalender</button>
+        <button class="btn" id="aapne">Svar på invitasjonen</button>
+        <button class="textlink" id="fristKal" aria-expanded="false" aria-controls="fristValg">+ Legg i kalender</button>
+      </div>
+      <div class="kalvalg" id="fristValg" hidden>
+        <a class="ghostbtn" id="fristGoogle" target="_blank" rel="noopener">Google Kalender ↗</a>
+        <button class="ghostbtn" id="fristIcs">Apple / Outlook</button>
       </div>
       <p class="done" id="pameldt" hidden>✓ Du har sendt svar fra denne enheten.</p>
     </section>
 
-    <section class="col gap" aria-labelledby="h-helg">
-      <h2 id="h-helg">Bryllupshelgen</h2>
-      <label class="bryter" style="margin-top:1.25rem">
-        <input type="checkbox" id="bareLor"><span class="spor" aria-hidden="true"></span>
-        <span>Vis bare lørdag</span>
-      </label>
-      <div class="faner" role="tablist" id="faner"></div>
-      <div id="paneler"></div>
+    <!-- Om oss -->
+    <section class="seksjon om" id="om-oss" data-toc="Om oss" aria-label="Om oss">
+      <figure class="om-bilde"><img src="media/oss-svalbard.jpg" alt="Sofie og Sigve på dekk med snødekte fjell og hav i bakgrunnen" width="1400" height="1311" loading="lazy"></figure>
+      <div class="om-tekst" id="omTekst"></div>
     </section>
 
-    <figure class="col gap" style="margin-bottom:0">
-      <div class="framed"><img src="media/krogerup.jpg" alt="Krogerup Højskole med blomstereng foran" width="1440" height="720" loading="lazy"></div>
-    </figure>
-
-    <section class="col gap" aria-label="Praktisk informasjon">
-      <div class="boxes">
-        <div class="box blue" id="boksOvernatting"><h3>Overnatting</h3></div>
-        <div class="box yellow"><h3>Reise</h3><p id="reise"></p></div>
+    <!-- Bryllupsdagen -->
+    <section class="seksjon" id="bryllupsdagen" data-toc="Bryllupsdagen" aria-labelledby="h-dagen">
+      <h2 id="h-dagen">Bryllupsdagen <span class="h-dato" id="dagDato"></span></h2>
+      <div class="dag-grid">
+        <div class="dag-tekst" id="dagTekst"></div>
+        <figure class="dag-bilde"><img src="media/krogerup.jpg" alt="Krogerup Højskole med blomstereng foran" width="1440" height="720" loading="lazy"></figure>
       </div>
+      <ol class="tidslinje" id="tidslinje" aria-label="Tidslinje for bryllupshelgen"></ol>
+      <label class="bryter">
+        <input type="checkbox" id="bareLor"><span class="spor" aria-hidden="true"></span>
+        <span>Kommer du bare lørdag? Skjul dagene før</span>
+      </label>
     </section>
 
-    <figure class="col gap photo-wide" style="margin-bottom:0">
-      <img src="media/surf.jpg" alt="Sofie og Sigve med surfebrett i havet" width="1320" height="756" loading="lazy">
-    </figure>
+    <!-- Dagene før -->
+    <section class="seksjon torfre" id="dagene-for" data-toc="Dagene før" aria-labelledby="h-for">
+      <h2 id="h-for">Dagene før <span class="h-dato">15.–16. juli</span></h2>
+      <p class="ingress" id="forIntro"></p>
+      <div class="kort-grid" id="forKort"></div>
+    </section>
 
-    <section class="col gap" aria-labelledby="h-kart">
+    <!-- Praktisk info -->
+    <section class="seksjon" id="praktisk" data-toc="Praktisk info" aria-labelledby="h-praktisk">
+      <h2 id="h-praktisk">Praktisk info</h2>
+      <div class="kort-grid" id="praktiskKort"></div>
+    </section>
+
+    <figure class="seksjon bred"><img src="media/surf.jpg" alt="Sofie og Sigve med surfebrett i havet" width="1320" height="756" loading="lazy"></figure>
+
+    <!-- Kart -->
+    <section class="seksjon" id="kart-seksjon" data-toc="Kart" aria-labelledby="h-kart">
       <h2 id="h-kart">Kart</h2>
       <div class="map-frame"><div id="kart" role="region" aria-label="Kart over Humlebæk"></div></div>
       <ul class="pins" id="pins"></ul>
     </section>
 
-    <footer class="col"><p>Sofie &amp; Sigve</p></footer>
+    <footer class="fot"><p>Sofie &amp; Sigve</p></footer>
   </main>
 
-  <button class="btn floating" id="flyt" hidden>Påmelding</button>
+  <button class="btn floating" id="flyt" hidden>Svar på invitasjonen</button>
 </div>
 
 <dialog id="dlg" aria-labelledby="h-dlg">
   <div class="dlg-top">
-    <h2 id="h-dlg">Påmelding</h2>
+    <h2 id="h-dlg">Svar på invitasjonen</h2>
     <button class="close" id="lukk" aria-label="Lukk">×</button>
   </div>
   <div class="dlg">
@@ -190,7 +223,17 @@ const C = {
       <p class="script" id="takkTittel">Tusen takk!</p>
       <p id="takkTekst"></p>
       <ul class="oppsummering" id="oppsummering"></ul>
-      <button class="btn" id="kalAlle">Legg i kalenderen</button>
+      <div id="kalBlokk">
+        <p style="margin-top:1.75rem">Legg i kalenderen:</p>
+        <div class="kalvalg">
+          <button class="btn" id="kalGoogle" aria-expanded="false" aria-controls="googleListe">Google Kalender</button>
+          <button class="ghostbtn" id="kalIcs">Apple / Outlook</button>
+        </div>
+        <div id="googleListe" hidden>
+          <p class="small" style="margin:1rem 0 .5rem">Trykk på hver dag for å legge den inn i Google Kalender:</p>
+          <ul class="kalliste" id="googleDager"></ul>
+        </div>
+      </div>
       <button class="btn" id="ferdig" style="background:transparent">Lukk</button>
     </div>
   </div>
@@ -214,7 +257,7 @@ function laasOpp(animer) {
   $("#ned").hidden = false;
   lagre("bryllup-kode", CFG.kode);
   startVideo();
-  if (animer) setTimeout(() => $("#steg").firstElementChild.scrollIntoView({ behavior: redusert ? "auto" : "smooth" }), 350);
+  if (animer) setTimeout(() => $("#svar").scrollIntoView({ behavior: redusert ? "auto" : "smooth" }), 350);
 }
 const fraLenke = new URLSearchParams(location.search).get("kode");
 if (fraLenke === CFG.kode || hent("bryllup-kode") === CFG.kode) {
@@ -231,7 +274,7 @@ $("#gate").addEventListener("submit", e => {
     const g = $("#gate"); g.classList.remove("riste"); void g.offsetWidth; g.classList.add("riste");
   }
 });
-$("#ned").onclick = () => $("#steg").firstElementChild.scrollIntoView({ behavior: redusert ? "auto" : "smooth" });
+$("#ned").onclick = () => $("#svar").scrollIntoView({ behavior: redusert ? "auto" : "smooth" });
 
 function startVideo() {
   const v = $("#video");
@@ -239,26 +282,66 @@ function startVideo() {
   v.preload = "auto"; v.play().catch(() => {});
 }
 
-/* ============ Avsnitt, ett per skjerm ============ */
-$("#steg").innerHTML = C.intro.map((t, i) => `<section class="steg col" id="avsnitt-${i + 1}"><p>${esc(t)}</p></section>`).join("");
-$("#prikker").innerHTML = C.intro.map((_, i) => `<button aria-label="Avsnitt ${i + 1}"></button>`).join("");
-const stegEl = [...document.querySelectorAll(".steg")];
-const prikker = [...$("#prikker").children];
-prikker.forEach((b, i) => b.onclick = () => stegEl[i].scrollIntoView({ behavior: redusert ? "auto" : "smooth" }));
-const stegObs = new IntersectionObserver(es => es.forEach(e => {
-  if (!e.isIntersecting) return;
-  const i = stegEl.indexOf(e.target);
-  e.target.classList.add("vis");
-  prikker.forEach((b, j) => b.setAttribute("aria-current", i === j));
-}), { threshold: 0.6 });
-stegEl.forEach(s => stegObs.observe(s));
-// Prikkene vises bare mens man er i avsnittene
-const synlige = new Set();
-const prikkObs = new IntersectionObserver(es => {
-  es.forEach(e => e.isIntersecting ? synlige.add(e.target) : synlige.delete(e.target));
-  $("#prikker").classList.toggle("skjult", synlige.size === 0);
-}, { threshold: 0.3 });
-stegEl.forEach(s => prikkObs.observe(s));
+
+/* ============ Innhold fra C ============ */
+const o = C.overnatting;
+$("#omTekst").innerHTML = C.intro.map(t => `<p>${esc(t)}</p>`).join("");
+new IntersectionObserver(([e], obs) => { if (e.isIntersecting) { e.target.classList.add("vis"); obs.disconnect(); } }, { threshold: 0.25 }).observe($("#omTekst"));
+$("#dagDato").textContent = C.bryllupsdagen.dato;
+$("#dagTekst").innerHTML = C.bryllupsdagen.tekst.map(t => `<p>${esc(t)}</p>`).join("");
+$("#tidslinje").innerHTML = C.tidslinje.map(p => `
+  <li class="${p.dag ? "ny-dag" : ""}">
+    ${p.dag ? `<span class="tl-dag">${esc(p.dag)}</span>` : ""}
+    <span class="tl-tid">${esc(p.tid)}</span>
+    <span class="tl-tittel">${esc(p.tittel)}</span>
+    <span class="tl-sted">${esc(p.sted)}</span>
+  </li>`).join("");
+
+$("#forIntro").textContent = C.dageneForIntro;
+$("#forKort").innerHTML = C.dager.filter(d => d.torfre).map(d => `
+  <div class="kort">
+    <p class="kort-dag">${esc(d.fane.replace(".", ". juli"))}</p>
+    <h3>${esc(d.tittel)}</h3>
+    <p>${esc(d.tekst)}</p>
+    ${d.rader?.length ? `<dl>${d.rader.map(([k, v]) => `<dt>${esc(k)}</dt><dd>${esc(v)}</dd>`).join("")}</dl>` : ""}
+    <p class="merknad">Overnatting torsdag og fredag ordner dere selv.</p>
+  </div>`).join("");
+
+$("#praktiskKort").innerHTML = `
+  <div class="kort blue"><h3>Overnatting lørdag–søndag</h3><p>${esc(o.lorSon)}${o.pris ? ` Pris: ${esc(o.pris)}.` : " Pris kommer."}</p></div>
+  <div class="kort torfre"><h3>Overnatting torsdag og fredag</h3><p>${esc(o.torFre)}</p></div>
+  <div class="kort yellow"><h3>Reise</h3><p>${esc(C.reise)}</p></div>`;
+
+/* ============ «Vis bare lørdag» ============ */
+function settBareLordag(on) {
+  $("#bareLor").checked = on;
+  document.body.classList.toggle("bare-lordag", on);
+  lagre("bryllup-barelordag", on ? "1" : null);
+  byggToc();
+}
+$("#bareLor").addEventListener("change", e => settBareLordag(e.target.checked));
+
+/* ============ Innholdsfortegnelse (store skjermer) ============ */
+const toc = $("#toc");
+let tocLenker = [], tocSeksjoner = [];
+function byggToc() {
+  const bareLor = document.body.classList.contains("bare-lordag");
+  tocSeksjoner = [...document.querySelectorAll("[data-toc]")].filter(s => !(bareLor && s.classList.contains("torfre")));
+  $("ol", toc).innerHTML = tocSeksjoner.map(s => `<li><a href="#${s.id}">${esc(s.dataset.toc)}</a></li>`).join("");
+  tocLenker = [...toc.querySelectorAll("a")];
+  tocLenker.forEach((a, i) => a.addEventListener("click", e => { e.preventDefault(); tocSeksjoner[i].scrollIntoView({ behavior: redusert ? "auto" : "smooth", block: "start" }); }));
+  oppdaterToc();
+}
+function oppdaterToc() {
+  const linje = innerHeight * 0.4;
+  let aktiv = -1;
+  tocSeksjoner.forEach((s, i) => { if (s.getBoundingClientRect().top <= linje) aktiv = i; });
+  tocLenker.forEach((a, i) => a.toggleAttribute("aria-current", i === aktiv));
+  toc.classList.toggle("skjult", $("#topp").getBoundingClientRect().bottom > innerHeight * 0.5);
+}
+addEventListener("scroll", oppdaterToc, { passive: true });
+addEventListener("resize", oppdaterToc);
+settBareLordag(hent("bryllup-barelordag") === "1");
 
 /* ============ Kalender (.ics) ============ */
 function nesteDag(d) {
@@ -277,51 +360,19 @@ function lastNedIcs(hendelser, filnavn) {
   document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(url), 1500);
 }
 $("#frist").textContent = C.svarfrist.tekst;
-$("#fristKal").onclick = () => lastNedIcs([{ id: "frist", dato: C.svarfrist.dato,
-  tittel: "Svarfrist: bryllup Sofie & Sigve", tekst: "Meld deg på her: " + C.url }], "svarfrist-sofie-sigve.ics");
-
-/* ============ Faner og «Vis bare lørdag» ============ */
-const faner = $("#faner"), paneler = $("#paneler");
-faner.innerHTML = C.dager.map(d => `<button role="tab" id="fane-${d.id}" aria-controls="panel-${d.id}" aria-selected="false" tabindex="-1" class="${d.torfre ? "torfre" : ""}">${esc(d.fane)}</button>`).join("");
-paneler.innerHTML = C.dager.map(d => `
-  <div class="panel ${d.torfre ? "torfre" : ""}" role="tabpanel" id="panel-${d.id}" aria-labelledby="fane-${d.id}" hidden>
-    <h3>${esc(d.tittel)}</h3><p>${esc(d.tekst)}</p>
-    ${d.rader.length ? `<dl>${d.rader.map(([k, v]) => `<dt>${esc(k)}</dt><dd>${esc(v)}</dd>`).join("")}</dl>` : ""}
-  </div>`).join("");
-function velgFane(id, fokus) {
-  C.dager.forEach(d => {
-    const on = d.id === id;
-    const f = $("#fane-" + d.id);
-    f.setAttribute("aria-selected", on); f.tabIndex = on ? 0 : -1;
-    $("#panel-" + d.id).hidden = !on;
-    if (on && fokus) f.focus();
-  });
+function googleLenke(h) {
+  const q = [["action", "TEMPLATE"], ["text", h.tittel], ["dates", `${h.dato}/${nesteDag(h.dato)}`],
+    ["details", h.tekst || ""], ["location", h.sted || C.sted]];
+  return "https://calendar.google.com/calendar/render?" + q.map(([k, v]) => `${k}=${k === "dates" ? v : encodeURIComponent(v)}`).join("&");
 }
-faner.addEventListener("click", e => { const b = e.target.closest("[role=tab]"); if (b) velgFane(b.id.slice(5)); });
-faner.addEventListener("keydown", e => {
-  if (!["ArrowLeft", "ArrowRight"].includes(e.key)) return;
-  const synligeFaner = [...faner.children].filter(b => b.offsetParent !== null);
-  const i = synligeFaner.indexOf(document.activeElement);
-  const n = synligeFaner[(i + (e.key === "ArrowRight" ? 1 : -1) + synligeFaner.length) % synligeFaner.length];
-  velgFane(n.id.slice(5), true);
-});
-function settBareLordag(on) {
-  $("#bareLor").checked = on;
-  document.body.classList.toggle("bare-lordag", on);
-  lagre("bryllup-barelordag", on ? "1" : null);
-  const aktiv = C.dager.find(d => $("#fane-" + d.id).getAttribute("aria-selected") === "true");
-  if (on && aktiv?.torfre) velgFane("lor");
-}
-$("#bareLor").addEventListener("change", e => settBareLordag(e.target.checked));
-velgFane("lor");
-settBareLordag(hent("bryllup-barelordag") === "1");
+const fristHendelse = { id: "frist", dato: C.svarfrist.dato, tittel: "Svarfrist: bryllup Sofie & Sigve", tekst: "Meld deg på her: " + C.url };
+$("#fristGoogle").href = googleLenke(fristHendelse);
+$("#fristKal").onclick = () => {
+  const v = $("#fristValg"); v.hidden = !v.hidden;
+  $("#fristKal").setAttribute("aria-expanded", !v.hidden);
+};
+$("#fristIcs").onclick = () => lastNedIcs([fristHendelse], "svarfrist-sofie-sigve.ics");
 
-/* ============ Infobokser ============ */
-const o = C.overnatting;
-$("#boksOvernatting").insertAdjacentHTML("beforeend", `
-  <h4>Lørdag–søndag</h4><p>${esc(o.lorSon)}${o.pris ? ` Pris: ${esc(o.pris)}.` : " Pris kommer."}</p>
-  <div class="torfre"><h4 style="margin-top:1.25rem">Torsdag og fredag</h4><p>${esc(o.torFre)}</p></div>`);
-$("#reise").textContent = C.reise;
 
 /* ============ Kart ============ */
 (function () {
@@ -467,21 +518,33 @@ form.addEventListener("submit", async e => {
   $("#takkTekst").textContent = kommer ? "Svaret er registrert. Vi gleder oss til å feire med dere." : "Så synd at dere ikke kan komme. Dere blir savnet!";
   const dagNavn = p => [p.torsdag && "tor", p.fredag && "fre", "lør", p.brunsj && "søn brunsj"].filter(Boolean).join(", ");
   $("#oppsummering").innerHTML = personer.map(p => `<li>${esc(p.navn)}${kommer ? `: <span class="muted">${dagNavn(p)}${p.overnatting ? ", overnatter" : ""}</span>` : ""}</li>`).join("");
-  $("#kalAlle").hidden = !kommer;
+  $("#kalBlokk").hidden = !kommer;
+  $("#googleListe").hidden = true; $("#kalGoogle").setAttribute("aria-expanded", "false");
   form.hidden = true; $("#takk").hidden = false; dlg.scrollTop = 0;
 });
 
 // Kalender etter svar: dagene minst én i påmeldingen kommer
-$("#kalAlle").onclick = () => {
-  if (!sisteSvar) return;
+function hendelserForSvar() {
+  if (!sisteSvar) return [];
   const p = sisteSvar.personer;
   const med = { tor: p.some(x => x.torsdag), fre: p.some(x => x.fredag), lor: true, son: p.some(x => x.brunsj) };
-  const hendelser = C.dager.filter(d => med[d.id]).map(d => ({
-    id: d.id, dato: d.dato, tittel: d.kalender,
+  return C.dager.filter(d => med[d.id]).map(d => ({
+    id: d.id, dato: d.dato, tittel: d.kalender, fane: d.fane, kort: d.tittel,
     tekst: d.tekst + (d.torfre ? " Overnatting ordnes selv." : "") + " Mer info: " + C.url
   }));
-  lastNedIcs(hendelser, "bryllupshelg-sofie-sigve.ics");
+}
+$("#kalIcs").onclick = () => lastNedIcs(hendelserForSvar(), "bryllupshelg-sofie-sigve.ics");
+$("#kalGoogle").onclick = () => {
+  const liste = $("#googleListe");
+  $("#googleDager").innerHTML = hendelserForSvar().map(h => `
+    <li><span>${esc(h.fane)} juli · ${esc(h.kort)}</span>
+    <a href="${esc(googleLenke(h))}" target="_blank" rel="noopener">Legg til ↗</a></li>`).join("");
+  liste.hidden = false; $("#kalGoogle").setAttribute("aria-expanded", "true");
 };
+$("#googleDager").addEventListener("click", e => {
+  const a = e.target.closest("a"); if (!a) return;
+  setTimeout(() => { a.textContent = "✓ Lagt til"; a.classList.add("lagt"); }, 300);
+});
 </script>
 </body>
 </html>
