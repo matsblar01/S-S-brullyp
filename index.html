@@ -56,16 +56,23 @@ const C = {
     { dag: "Søndag 18. juli", tid: "12:00", tittel: "Brunsj", sted: "Krogerup Højskole" }
   ],
 
-  dageneForIntro: "For dere som kommer tidligere, er det et lavterskel opplegg torsdag og fredag.",
+  dageneForIntro: "Vi inviterer først og fremst til bryllup og bryllupsfest lørdag til søndag. Samtidig ser vi for oss at flere har lyst til å tilbringe litt mer tid rundt Humlebæk eller i København, og det synes vi er veldig hyggelig! For de som er i området vil vi invitere til en lavterskel sammenkomst på torsdag ettermiddag mens på fredag blir det ikke noe offisielt opplegg annet enn å nyte nærområdet og lade godt opp.",
 
   // Brukes av «Dagene før», påmeldingen og kalenderen. torfre: true = skjules med «Vis bare lørdag».
   dager: [
     { id: "tor", fane: "Tor 15.", dato: "20270715", torfre: true,
-      tittel: "Sammenkomst", tekst: "Lavterskel sammenkomst for dere som allerede er i Danmark.",
-      rader: [["Tid", "TBA"], ["Sted", "TBA"]],
+      tittel: "Bli-kjent-treff", tekst: "Vi som allerede er i Danmark møtes, blir kjent, spiser drikker og hygger oss.",
+      rader: [["Tid", "Ettermiddag"], ["Sted", "I eller rundt Humlebæk"]],
       kalender: "Sammenkomst før bryllupet (Sofie & Sigve)" },
     { id: "fre", fane: "Fre 16.", dato: "20270716", torfre: true,
-      tittel: "Lavterskel", tekst: "Mer informasjon kommer.",
+      tittel: "Åpen dag - nyt området", tekst: ["Tips til ting å se og gjøre:",
+                                                "-Louisiana",
+                                                "Sykkelturer i skogene i området (Sjekk Sigve og Arnt sin Strava)",
+                                                "Besøk Fredensborg Slot"
+                                                "Jægersborg Dyrehave og Eremitageslottet",
+                                                "Nordsjelland med Helsingør, Hornbæk og Gilleleje",
+                                                "Toget til København"
+                                               ],
       rader: [["Tid", "TBA"], ["Sted", "TBA"]],
       kalender: "Bryllupshelg: fredag (Sofie & Sigve)" },
     { id: "lor", fane: "Lør 17.", dato: "20270717",
